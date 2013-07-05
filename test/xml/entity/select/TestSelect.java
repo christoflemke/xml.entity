@@ -26,17 +26,15 @@ import static xml.entity.parser.matcher.ImmutableMatchers.valueIs;
 
 import java.io.IOException;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import xml.entity.CommonData;
 import xml.entity.immutableelement.ImmutableElement;
+import xml.entity.parser.NullServiceContext;
 import xml.entity.parser.Parser;
 import xml.entity.parser.matcher.ImmutableMatchers;
 
@@ -45,16 +43,9 @@ import com.google.common.collect.ImmutableList;
 
 public class TestSelect
 {
-
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	private Parser parser;
+    private final Parser parser = NullServiceContext.create().parser();
 	@Rule public ExpectedException expected = ExpectedException.none();
     @Rule public ErrorCollector errorCollector = new ErrorCollector();
-
-	@Before public void setup()
-	{
-		parser = Parser.createDefault();
-	}
 
     @Test
     public void testSelectRoot()
@@ -62,16 +53,16 @@ public class TestSelect
         final ImmutableElement element = CommonData.singleElement.get().immutableCopy();
 
         ImmutableElement match = element.select().from("/Foo").one();
-        errorCollector.checkThat(match, nameIs("Foo"));
+        this.errorCollector.checkThat(match, nameIs("Foo"));
 
         match = element.select().from("/*").one();
-        errorCollector.checkThat(match, nameIs("Foo"));
+        this.errorCollector.checkThat(match, nameIs("Foo"));
     }
 
 	@Test
 	public void testSelectText() throws SAXException, IOException
 	{
-        final ImmutableElement element = parser.parse(CommonData.simpleXml.getInput());
+        final ImmutableElement element = this.parser.parse(CommonData.simpleXml.getInput());
         final ImmutableElement selected = element.select().from("/Foo/Bar").one();
 		assertThat(selected, valueIs("baz"));
 	}
@@ -79,7 +70,7 @@ public class TestSelect
 	@Test
 	public void testSelectAttr() throws SAXException, IOException
 	{
-        final ImmutableElement xmlElement = parser.parse(CommonData.withAttr.getInput());
+        final ImmutableElement xmlElement = this.parser.parse(CommonData.withAttr.getInput());
         final ImmutableElement selected = xmlElement.select().from("/Foo/Bar@name").one();
 		assertThat(selected, nameIs("Bar"));
 		assertThat(selected, hasChild(nameIs("@name")));
@@ -88,7 +79,7 @@ public class TestSelect
 
 	@Test public void testSelectByAttrValue() throws SAXException, IOException
 	{
-        final ImmutableElement xmlElement = parser.parse(CommonData.withAttr.getInput());
+        final ImmutableElement xmlElement = this.parser.parse(CommonData.withAttr.getInput());
         final ImmutableElement selected = xmlElement.select().from("Foo/Bar@name=baz").one();
 		assertThat(selected, nameIs("Bar"));
 		assertThat(selected, hasChild(nameIs("@name")));
@@ -98,7 +89,7 @@ public class TestSelect
 	@Test
 	public void testSelectAttrWithText() throws SAXException, IOException
 	{
-        final ImmutableElement xmlElement = parser.parse(CommonData.withAttrAndText.getInput());
+        final ImmutableElement xmlElement = this.parser.parse(CommonData.withAttrAndText.getInput());
         final ImmutableElement selected = xmlElement.select().from("/Foo/Bar@name").one();
 		assertThat(selected, nameIs("Bar"));
 		assertThat(selected, ImmutableMatchers.hasChild(valueIs("baz")));
@@ -107,7 +98,7 @@ public class TestSelect
 	@Test
 	public void testPartialSelect() throws SAXException, IOException
 	{
-        final ImmutableElement xmlElement = parser.parse(CommonData.withAttrAndText.getInput());
+        final ImmutableElement xmlElement = this.parser.parse(CommonData.withAttrAndText.getInput());
         final ImmutableElement selected = xmlElement.select().from("Foo/Bar").one();
 		assertThat(selected, nameIs("Bar"));
 		assertThat(selected, not(isLeaf()));
@@ -116,7 +107,7 @@ public class TestSelect
 	@Test
 	public void testSelectWithMultipeResults() throws SAXException, IOException
 	{
-        final ImmutableElement element = parser.parse(CommonData.xmlWithMultipleElementsWithSameName.getInput());
+        final ImmutableElement element = this.parser.parse(CommonData.xmlWithMultipleElementsWithSameName.getInput());
         final ImmutableList<ImmutableElement> selected = element.select().from("Foo/Collection/*").all();
 		assertThat(selected.size(), is(2));
 		assertThat(selected, hasItem(nameIs("Bar")));

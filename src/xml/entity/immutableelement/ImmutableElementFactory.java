@@ -15,7 +15,10 @@
  */
 package xml.entity.immutableelement;
 
+import javax.inject.Inject;
+
 import xml.entity.select.DefaultSelector;
+import xml.entity.select.PathParser;
 import xml.entity.select.Selector;
 
 import com.google.common.collect.ImmutableList;
@@ -23,39 +26,41 @@ import com.google.common.collect.ImmutableList;
 public class ImmutableElementFactory
 {
     private final Selector selector;
-    private ImmutableElementFactory(final Selector selector)
+
+    @Inject
+    public ImmutableElementFactory(final Selector selector)
     {
         this.selector = selector;
     }
 
-    public static ImmutableElementFactory create(final Selector selector)
+    private ImmutableElementFactory()
     {
-        return new ImmutableElementFactory(selector);
+        this.selector = new DefaultSelector(PathParser.create(), this);
     }
 
-	public static ImmutableElementFactory create()
+    public static ImmutableElementFactory create()
 	{
-        return new ImmutableElementFactory(DefaultSelector.create());
-	}
+        return new ImmutableElementFactory();
+    }
 
     public ImmutableElement createNode(final String name, final ImmutableList<ImmutableElement> children)
 	{
-        return new InternalElement(name, children, selector);
+        return new InternalElement(name, children, this.selector);
 	}
 
 	public ImmutableElement createAttr(final String name, final String value)
 	{
-        return new Attribute(name, value, selector);
+        return new Attribute(name, value, this.selector);
 	}
 
 	public ImmutableElement createText(final String value)
 	{
-        return new Text(value, selector);
+        return new Text(value, this.selector);
 	}
 
     public ImmutableElement createLeaf(final String name)
     {
         final ImmutableList<ImmutableElement> of = ImmutableList.of();
-        return new InternalElement(name, of, selector);
+        return new InternalElement(name, of, this.selector);
     }
 }

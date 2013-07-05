@@ -15,29 +15,38 @@
  */
 package xml.entity.mutableelement;
 
+import javax.inject.Inject;
+
+import xml.entity.immutableelement.ImmutableElementFactory;
 
 public class ElementFactory
 {
-	private ElementFactory()
-	{}
+    private final ImmutableElementFactory immutableFactory;
+
+    @Inject
+    public ElementFactory(final ImmutableElementFactory factory)
+    {
+        super();
+        this.immutableFactory = factory;
+    }
 
     public static ElementFactory create()
 	{
-		return new ElementFactory();
+        return new ElementFactory(ImmutableElementFactory.create());
 	}
 
 	public Element createNode(final String name)
 	{
-        return new InternalElement(name);
+        return new InternalElement(name, this.immutableFactory);
 	}
 
 	public Element createAttr(final String name, final String value)
 	{
-        return new Attribute(name, value);
+        return new Attribute(name, value, this.immutableFactory);
 	}
 
 	public Element createText(final String value)
 	{
-        return new Text(value);
+        return new Text(value, this.immutableFactory);
 	}
 }

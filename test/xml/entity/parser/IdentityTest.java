@@ -62,23 +62,24 @@ public class IdentityTest
 
 	private final InputSupplier<Reader> input;
 	private final boolean expectIdentity;
-	private final Parser parser;
+    private final Parser parser = NullServiceContext.create().parser();
+    private final Serializer serializer = NullServiceContext.create().serializer();
+
 	public IdentityTest(final InputSupplier<Reader> input, final boolean expectIdentity)
 	{
 		super();
 		this.input = input;
 		this.expectIdentity = expectIdentity;
-		parser = Parser.createDefault();
 	}
 
 	@Test public void testIdentity() throws SAXException, IOException
 	{
-		final String asString = CharStreams.toString(input);
-		logger.debug("asString:   {}", asString);
-        final ImmutableElement element = parser.parse(input.getInput());
-		final String serialized = Serializer.createDefault().serialize(element).toString();
-		logger.debug("serialized: {}", serialized);
-		if(expectIdentity)
+		final String asString = CharStreams.toString(this.input);
+		this.logger.debug("asString:   {}", asString);
+        final ImmutableElement element = this.parser.parse(this.input.getInput());
+        final String serialized = this.serializer.serialize(element).toString();
+		this.logger.debug("serialized: {}", serialized);
+		if(this.expectIdentity)
 		{
 			assertThat(serialized, is(asString));
 		}

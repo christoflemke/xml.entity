@@ -27,9 +27,9 @@ class Attribute extends AbstractElement implements Element
 {
     private String value;
 
-    Attribute(final String name, final String value)
+    Attribute(final String name, final String value, final ImmutableElementFactory factory)
     {
-        super("@" + name);
+        super("@" + name, factory);
         Preconditions.checkNotNull(value);
         this.value = value;
     }
@@ -42,20 +42,20 @@ class Attribute extends AbstractElement implements Element
 
     @Override @Nullable public String value()
     {
-        return value;
+        return this.value;
     }
 
     @Override
     @Nonnull
     public Element copy()
     {
-        return new Attribute(attributeName(), value);
+        return new Attribute(attributeName(), this.value, this.factory);
     }
 
     @Override
     public ImmutableElement immutableCopy()
     {
-        return ImmutableElementFactory.create().createAttr(attributeName(), value);
+        return this.factory.createAttr(attributeName(), this.value);
     }
 
     private String attributeName()
@@ -65,6 +65,6 @@ class Attribute extends AbstractElement implements Element
 
     @Override public String toString()
     {
-        return name() + "=" + value;
+        return name() + "=" + this.value;
     }
 }

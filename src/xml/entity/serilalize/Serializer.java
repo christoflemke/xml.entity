@@ -28,6 +28,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.Map.Entry;
 
+import javax.inject.Inject;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -37,7 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import xml.entity.immutableelement.ImmutableElement;
 import xml.entity.immutableelement.ImmutableElements;
-import xml.entity.parser.NullServiceContext;
 import xml.entity.parser.ServiceContext;
 
 import com.google.common.collect.ImmutableList;
@@ -48,19 +48,17 @@ public class Serializer
 {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final ServiceContext context;
-	public static Serializer createDefault()
-	{
-		return new Serializer(new NullServiceContext());
-	}
-	public static Serializer createFromContext(final ServiceContext serviceContext)
-	{
-		return new Serializer(serviceContext);
-	}
 
-	private Serializer(final ServiceContext context)
-	{
-		this.context = context;
-	}
+    @Inject
+    public Serializer(final ServiceContext context)
+    {
+        this.context = context;
+    }
+
+    public static Serializer create(final ServiceContext serviceContext)
+    {
+        return new Serializer(serviceContext);
+    }
 
     public SerializationContext serialize(final ImmutableElement element)
 	{
@@ -87,7 +85,7 @@ public class Serializer
             {
                 throw new RuntimeException(e);
             }
-            writeInternal(streamWriter, element);
+            writeInternal(streamWriter, this.element);
             streamWriter.writeEndDocument();
             streamWriter.flush();
 		}
@@ -124,13 +122,13 @@ public class Serializer
             {
                 streamWriter.writeStartElement(current.name());
             }
-            if(current == element) // if root
+            if(current == this.element) // if root
             {
-                final ImmutableMap<String, String> namespaceDecls = context.getNamespaceDecls(current);
+                final ImmutableMap<String, String> namespaceDecls = Serializer.this.context.getNamespaceDecls(current);
                 final ImmutableSet<Entry<String, String>> entrySet = namespaceDecls.entrySet();
                 for(final Entry<String, String> entry : entrySet)
                 {
-                    logger.debug("write namespace: {}:{}", entry.getKey(), entry.getValue());
+                    Serializer.this.logger.debug("write namespace: {}:{}", entry.getKey(), entry.getValue());
                     streamWriter.writeNamespace(entry.getKey(), entry.getValue());
                 }
             }

@@ -19,21 +19,26 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
+import xml.entity.immutableelement.ImmutableElementFactory;
+
 abstract class AbstractElement implements Element
 {
+    protected final ImmutableElementFactory factory;
     @Nonnull private final String name;
 
     AbstractElement(
-            @Nonnull final String name)
+            @Nonnull final String name,
+            final ImmutableElementFactory factory)
     {
         super();
         this.name = name;
+        this.factory = factory;
     }
 
     @Override
     public String name()
     {
-        return name;
+        return this.name;
     }
 
     @Override
@@ -52,7 +57,7 @@ abstract class AbstractElement implements Element
     @Nonnull
     public Collection<Element> children()
     {
-        throw new IllegalStateException(name + " " + this + " can not have children");
+        throw new IllegalStateException(this.name + " " + this + " can not have children");
     }
 
     @Override
@@ -73,6 +78,6 @@ abstract class AbstractElement implements Element
     @Nonnull
     public Element attribute(final String string)
     {
-        throw new IllegalStateException(name + " " + this + " can not have children");
+        throw new IllegalStateException(this.name + " " + this + " can not have children");
     }
 }

@@ -36,29 +36,30 @@ class InternalElement extends AbstractElement implements Element
 {
     private final List<Element> children = Lists.newArrayList();
     InternalElement(
-            @Nonnull final String name)
+            @Nonnull final String name,
+            final ImmutableElementFactory factory)
 	{
-        super(name);
+        super(name, factory);
 	}
 
 	@Override
 	public String value()
 	{
-        final String value = Joiner.on("").join(Iterables.filter(children, Elements.byName("#text")));
+        final String value = Joiner.on("").join(Iterables.filter(this.children, Elements.byName("#text")));
         return "".equals(value) ? null : value;
 	}
 
 	@Override
 	public Element child(final String name)
 	{
-        return new MissingElement(this, name);
+        return new MissingElement(this, name, this.factory);
 	}
 
 
     @Override public Element value(final String value)
     {
         Iterables.removeIf(children(), Elements.byName("#text"));
-        children().add(new Text(value));
+        children().add(new Text(value, this.factory));
         return this;
     }
 
@@ -66,7 +67,7 @@ class InternalElement extends AbstractElement implements Element
     @Nonnull
     public Collection<Element> children()
     {
-        return children;
+        return this.children;
     }
 
     @Override
@@ -78,7 +79,7 @@ class InternalElement extends AbstractElement implements Element
 
     @Override @Nonnull public Element copy()
     {
-        final InternalElement copy = new InternalElement(name());
+        final InternalElement copy = new InternalElement(name(), this.factory);
         copy.children().addAll(Collections2.transform(children(), Elements.copy));
         return copy;
     }
@@ -90,7 +91,7 @@ class InternalElement extends AbstractElement implements Element
                 .from(children())
                 .transform(Elements.immutableCopy)
                 .toImmutableList();
-        return ImmutableElementFactory.create().createNode(name(), children);
+        return this.factory.createNode(name(), children);
     }
 
     @Override @Nonnull public Element attribute(final String string)
@@ -102,7 +103,7 @@ class InternalElement extends AbstractElement implements Element
         }
         else
         {
-            return new MissingElement(this, "@" + string)
+            return new MissingElement(this, "@" + string, this.factory)
             {
                 @Override
                 public Element value(final String value)
@@ -116,6 +117,6 @@ class InternalElement extends AbstractElement implements Element
 
     @Override public String toString()
     {
-        return name() + children.toString();
+        return name() + this.children.toString();
     }
 }

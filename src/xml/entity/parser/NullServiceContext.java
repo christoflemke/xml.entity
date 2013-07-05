@@ -16,36 +16,87 @@
 package xml.entity.parser;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
 import xml.entity.immutableelement.ImmutableElement;
+import xml.entity.immutableelement.ImmutableElementFactory;
+import xml.entity.mutableelement.ElementFactory;
 import xml.entity.serilalize.Serializer;
 
 import com.google.common.collect.ImmutableMap;
 
 public class NullServiceContext implements ServiceContext
 {
+    private final Parser parser;
+    private final Serializer serializer;
+    private final ImmutableElementFactory factory;
+    private final ElementFactory mutableFactory;
+    @Inject
+    public NullServiceContext(
+            final Parser parser,
+            final Serializer serializer,
+            final ImmutableElementFactory factory,
+            final ElementFactory mutableFactory)
+    {
+        super();
+        this.parser = parser;
+        this.serializer = serializer;
+        this.factory = factory;
+        this.mutableFactory = mutableFactory;
+    }
 
-	@Override public void addNamespaceDecl(@Nonnull final String prefix, @Nonnull final String url)
-	{}
+    private NullServiceContext()
+    {
+        this.factory = ImmutableElementFactory.create();
+        this.parser = Parser.create(this, this.factory);
+        this.serializer = Serializer.create(this);
+        this.mutableFactory = new ElementFactory(this.factory);
+    }
 
-	@Override public String getUrlForPrefix(@Nonnull final String prefix)
-	{
-		return null;
-	}
+    public static ServiceContext create()
+    {
+        return new NullServiceContext();
+    }
+
+    @Override
+    public void addNamespaceDecl(@Nonnull final String prefix, @Nonnull final String url)
+    {}
+
+    @Override
+    public String getUrlForPrefix(@Nonnull final String prefix)
+    {
+        return null;
+    }
 
     @Override
     public void collectNamespaceDecls(final ImmutableElement element)
-	{}
+    {}
 
-	@Override public Parser createParser()
-	{
-		return Parser.createDefault();
-	}
+    @Override
+    public Parser parser()
+    {
+        return this.parser;
+    }
 
-	@Override public Serializer createSerializer()
-	{
-		return Serializer.createDefault();
-	}
+    @Override
+    public Serializer serializer()
+    {
+        return this.serializer;
+    }
+
+    @Override
+    @Nonnull
+    public ImmutableElementFactory factory()
+    {
+        return this.factory;
+    }
+
+    @Override
+    @Nonnull
+    public ElementFactory mutableFactory()
+    {
+        return this.mutableFactory;
+    }
 
     @Override
     public ImmutableMap<String, String> getNamespaceDecls(final ImmutableElement element)

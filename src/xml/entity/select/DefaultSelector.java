@@ -27,6 +27,7 @@ import java.util.NoSuchElementException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +67,25 @@ import com.google.common.collect.Sets.SetView;
 public class DefaultSelector implements Selector
 {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final ImmutableElementFactory factory = ImmutableElementFactory.create(this);
+    private final ImmutableElementFactory factory;
+    private final PathParser pathParser;
+
+    @Inject
+    public DefaultSelector(
+            final PathParser pathParser,
+            final ImmutableElementFactory factory)
+    {
+        this.pathParser = pathParser;
+        this.factory = factory;
+    }
+
+    public static Selector create(final PathParser pathParser,
+            final ImmutableElementFactory factory)
+    {
+        return new DefaultSelector(
+                pathParser,
+                factory);
+    }
 
     private abstract class ReplaceVisitor implements ISelectionVisitor
     {
@@ -76,7 +95,7 @@ public class DefaultSelector implements Selector
         public ReplaceVisitor()
         {
             super();
-            root = null;
+            this.root = null;
         }
 
         @Override
@@ -95,20 +114,20 @@ public class DefaultSelector implements Selector
                 return;
             }
             // test if replacements for children exist
-            final SetView<ImmutableElement> intersection = Sets.intersection(Sets.newHashSet(element.children()), replace.keySet());
+            final SetView<ImmutableElement> intersection = Sets.intersection(Sets.newHashSet(element.children()), this.replace.keySet());
             if(intersection.isEmpty())
             {
                 // always set root to the last node left
-                if(replace.containsKey(element))
+                if(this.replace.containsKey(element))
                 {
                     // if the root node has been replaced
-                    root = replace.get(element);
-                    logger.debug("replace root: {}, with: {}", element, root);
+                    this.root = this.replace.get(element);
+                    DefaultSelector.this.logger.debug("replace root: {}, with: {}", element, this.root);
                 }
                 else
                 {
                     // if the node is unmodified
-                    root = element;
+                    this.root = element;
                 }
             }
             else
@@ -117,10 +136,10 @@ public class DefaultSelector implements Selector
                 final Builder<ImmutableElement> builder = ImmutableList.builder();
                 for(final ImmutableElement e : element.children())
                 {
-                    if(replace.containsKey(e))
+                    if(this.replace.containsKey(e))
                     {
-                        final ImmutableElement repacement = replace.remove(e);
-                        logger.debug("replace: {}, with: {}", e, repacement);
+                        final ImmutableElement repacement = this.replace.remove(e);
+                        DefaultSelector.this.logger.debug("replace: {}, with: {}", e, repacement);
                         if(repacement == null)
                         {
                             // skip
@@ -135,27 +154,26 @@ public class DefaultSelector implements Selector
                         builder.add(e);
                     }
                 }
-                final ImmutableElement internalElement = factory.createNode(element.name(), builder.build());
+                final ImmutableElement internalElement = DefaultSelector.this.factory.createNode(element.name(), builder.build());
                 replace(element, internalElement);
-                root = internalElement;
+                this.root = internalElement;
             }
         }
 
         protected void replace(final ImmutableElement old, final ImmutableElement newElement)
         {
-            logger.debug("add replacement: {}, with: {}", old, newElement);
-            replace.put(old, newElement);
+            DefaultSelector.this.logger.debug("add replacement: {}, with: {}", old, newElement);
+            this.replace.put(old, newElement);
         }
 
         public ImmutableElement element()
         {
-            return root;
+            return this.root;
         }
     }
 
     private static interface UpdateOperation extends Function<ImmutableElement, ImmutableElement>
-    {
-    }
+    {}
 
     private class ReplaceOperation implements UpdateOperation
     {
@@ -169,22 +187,21 @@ public class DefaultSelector implements Selector
         }
         @Override
         @Nullable
-        public
-        ImmutableElement apply(@Nullable final ImmutableElement input)
+        public ImmutableElement apply(@Nullable final ImmutableElement input)
         {
             final Builder<ImmutableElement> builder = ImmutableList.builder();
             for(final ImmutableElement e : input.children())
             {
-                if(replace.apply(e))
+                if(this.replace.apply(e))
                 {
-                    builder.add(with);
+                    builder.add(this.with);
                 }
                 else
                 {
                     builder.add(e);
                 }
             }
-            return factory.createNode(input.name(), builder.build());
+            return DefaultSelector.this.factory.createNode(input.name(), builder.build());
         }
 
     }
@@ -205,18 +222,18 @@ public class DefaultSelector implements Selector
         public ImmutableElement apply(final ImmutableElement element)
         {
             final Builder<ImmutableElement> builder = ImmutableList.builder();
-            builder.addAll(filter(element.children(), not(byName("@" + name))));
-            if(value != null)
+            builder.addAll(filter(element.children(), not(byName("@" + this.name))));
+            if(this.value != null)
             {
-                builder.add(factory.createAttr(name, value));
+                builder.add(DefaultSelector.this.factory.createAttr(this.name, this.value));
             }
-            return factory.createNode(element.name(), builder.build());
+            return DefaultSelector.this.factory.createNode(element.name(), builder.build());
         }
 
         @Override
         public String toString()
         {
-            return "@" + name + "=" + value;
+            return "@" + this.name + "=" + this.value;
         }
     }
 
@@ -235,17 +252,17 @@ public class DefaultSelector implements Selector
         {
             final Builder<ImmutableElement> builder = ImmutableList.builder();
             builder.addAll(filter(element.children(), not(isText())));
-            if(value != null)
+            if(this.value != null)
             {
-                builder.add(factory.createText(value));
+                builder.add(DefaultSelector.this.factory.createText(this.value));
             }
-            return factory.createNode(element.name(), builder.build());
+            return DefaultSelector.this.factory.createNode(element.name(), builder.build());
         }
 
         @Override
         public String toString()
         {
-            return "#text=" + value;
+            return "#text=" + this.value;
         }
     }
 
@@ -256,14 +273,14 @@ public class DefaultSelector implements Selector
             private final Builder<ImmutableElement> builder;
             private SelectVisitor()
             {
-                builder = ImmutableList.builder();
+                this.builder = ImmutableList.builder();
             }
 
             @Override
             public ImmutableList<ImmutableElement> get()
             {
-                select(path, element, this);
-                return builder.build();
+                select(NodeSelectImpl.this.path, NodeSelectImpl.this.element, this);
+                return this.builder.build();
             }
             @Override
             public void mismatch(final ImmutableElement element)
@@ -271,9 +288,9 @@ public class DefaultSelector implements Selector
             @Override
             public void match(final ImmutableElement element)
             {
-                if(expr.apply(element))
+                if(NodeSelectImpl.this.expr.apply(element))
                 {
-                    builder.add(element);
+                    this.builder.add(element);
                 }
             }
             @Override
@@ -297,7 +314,7 @@ public class DefaultSelector implements Selector
         @Nonnull
         public NodeSelection where(final Predicate<ImmutableElement> expr)
         {
-            return new NodeSelectImpl(element, path, Predicates.and(expr, this.expr));
+            return new NodeSelectImpl(this.element, this.path, Predicates.and(expr, this.expr));
         }
         @Override
         @Nonnull
@@ -305,7 +322,7 @@ public class DefaultSelector implements Selector
         {
             if(all().isEmpty())
             {
-                throw new NoSuchElementException("no element found at path: " + path);
+                throw new NoSuchElementException("no element found at path: " + this.path);
             }
             return Iterables.getOnlyElement(all());
         }
@@ -319,7 +336,7 @@ public class DefaultSelector implements Selector
         @Nonnull
         public ImmutableList<ImmutableElement> all()
         {
-            return supplier.get();
+            return this.supplier.get();
         }
     }
 
@@ -340,33 +357,33 @@ public class DefaultSelector implements Selector
 
         ImmutableElement getRoot()
         {
-            return root;
+            return this.root;
         }
 
         Predicate<ImmutableElement> getExpr()
         {
-            return expr;
+            return this.expr;
         }
 
         Path getPath()
         {
-            return path;
+            return this.path;
         }
 
         public ExpectedMatches getExpectedMatches()
         {
-            return expectedMatches;
+            return this.expectedMatches;
         }
 
         public final T expect(final ExpectedMatches matches)
         {
-            return create(root, path, expr, matches);
+            return create(this.root, this.path, this.expr, matches);
         }
 
         @Override
         public final T where(final Predicate<ImmutableElement> expr)
         {
-            return create(root, path, Predicates.and(getExpr(), expr), expectedMatches);
+            return create(this.root, this.path, Predicates.and(getExpr(), expr), this.expectedMatches);
         }
 
         abstract T create(ImmutableElement root, Path path, Predicate<ImmutableElement> expr, ExpectedMatches expectedMatches);
@@ -380,18 +397,18 @@ public class DefaultSelector implements Selector
             @Override
             public void match(final ImmutableElement element)
             {
-                if(expr.apply(element))
+                if(AbstractSelectOperation.this.expr.apply(element))
                 {
-                    numMatches++;
+                    this.numMatches++;
                     onMatch(element, this);
                 }
             }
 
             void checkMatches()
             {
-                if(!expectedMatches.apply(numMatches))
+                if(!AbstractSelectOperation.this.expectedMatches.apply(this.numMatches))
                 {
-                    throw new DSLException("Expected: :" + expectedMatches + ", acutual: " + numMatches);
+                    throw new DSLException("Expected: :" + AbstractSelectOperation.this.expectedMatches + ", acutual: " + this.numMatches);
                 }
             }
         }
@@ -430,7 +447,7 @@ public class DefaultSelector implements Selector
         public void onMatch(final ImmutableElement element, final ReplaceVisitor visitor)
         {
             ImmutableElement copy = element;
-            for(final UpdateOperation op : ops)
+            for(final UpdateOperation op : this.ops)
             {
                 copy = op.apply(copy);
             }
@@ -440,7 +457,7 @@ public class DefaultSelector implements Selector
         @Override
         NodeUpdate create(final ImmutableElement root, final Path path, final Predicate<ImmutableElement> expr, final ExpectedMatches expectedMatches)
         {
-            return new NodeUpdateImpl(root, path, expr, ops, expectedMatches);
+            return new NodeUpdateImpl(root, path, expr, this.ops, expectedMatches);
         }
         @Override
         @Nonnull
@@ -459,7 +476,7 @@ public class DefaultSelector implements Selector
         private NodeUpdate withOp(final UpdateOperation operation)
         {
             final Builder<UpdateOperation> builder = ImmutableList.builder();
-            builder.addAll(ops);
+            builder.addAll(this.ops);
             builder.add(operation);
             return new NodeUpdateImpl(getRoot(), getPath(), getExpr(), builder.build(), getExpectedMatches());
         }
@@ -490,8 +507,8 @@ public class DefaultSelector implements Selector
             final Builder<ImmutableElement> children = ImmutableList.builder();
             children
                     .addAll(element.children())
-                    .addAll(nodes);
-            final ImmutableElement copy = factory.createNode(element.name(), children.build());
+                    .addAll(this.nodes);
+            final ImmutableElement copy = DefaultSelector.this.factory.createNode(element.name(), children.build());
             visitor.replace(element, copy);
         }
         @Override
@@ -504,7 +521,7 @@ public class DefaultSelector implements Selector
         public InsertInto values(final List<ImmutableElement> values)
         {
             final Builder<ImmutableElement> builder = ImmutableList.builder();
-            builder.addAll(nodes);
+            builder.addAll(this.nodes);
             builder.addAll(values);
             return new InsertIntoImpl(getRoot(), getPath(), builder.build(), getExpr(), getExpectedMatches());
         }
@@ -512,7 +529,7 @@ public class DefaultSelector implements Selector
         @Override
         InsertInto create(final ImmutableElement root, final Path path, final Predicate<ImmutableElement> expr, final ExpectedMatches expectedMatches)
         {
-            return new InsertIntoImpl(root, path, nodes, expr, expectedMatches);
+            return new InsertIntoImpl(root, path, this.nodes, expr, expectedMatches);
         }
     }
 
@@ -537,17 +554,6 @@ public class DefaultSelector implements Selector
         {
             return new NodeDeleteImpl(root, path, expr, expectedMatches);
         }
-    }
-
-    private final PathParser pathParser = PathParser.create();
-    private DefaultSelector()
-    {
-
-    }
-
-    public static Selector create()
-    {
-        return new DefaultSelector();
     }
 
     void select(final Path path, final ImmutableElement current, final ISelectionVisitor visitor)
@@ -585,7 +591,7 @@ public class DefaultSelector implements Selector
             @Override
             public NodeSelection from(final String path)
             {
-                final Path parsed = pathParser.parse(path);
+                final Path parsed = DefaultSelector.this.pathParser.parse(path);
                 final Predicate<ImmutableElement> expr = Predicates.alwaysTrue();
                 return new NodeSelectImpl(element, parsed, expr);
             }
@@ -601,7 +607,7 @@ public class DefaultSelector implements Selector
             @Override
             public InsertInto into(final String path)
             {
-                final Path parse = pathParser.parse(path);
+                final Path parse = DefaultSelector.this.pathParser.parse(path);
                 final ImmutableList<ImmutableElement> nodes = ImmutableList.of();
                 final Predicate<ImmutableElement> expr = Predicates.alwaysTrue();
                 return new InsertIntoImpl(element, parse, nodes, expr, ExpectedMatches.any());
@@ -619,7 +625,7 @@ public class DefaultSelector implements Selector
             @Nonnull
             public NodeUpdate from(final String path)
             {
-                final Path parsed = pathParser.parse(path);
+                final Path parsed = DefaultSelector.this.pathParser.parse(path);
                 final Predicate<ImmutableElement> alwaysTrue = Predicates.alwaysTrue();
                 final ImmutableList<UpdateOperation> ops = ImmutableList.of();
                 return new NodeUpdateImpl(element, parsed, alwaysTrue, ops, ExpectedMatches.any());
@@ -636,7 +642,7 @@ public class DefaultSelector implements Selector
             @Override
             public NodeDelete from(final String path)
             {
-                final Path parsed = pathParser.parse(path);
+                final Path parsed = DefaultSelector.this.pathParser.parse(path);
                 final Predicate<ImmutableElement> expr = Predicates.alwaysTrue();
                 return new NodeDeleteImpl(element, parsed, expr, ExpectedMatches.any());
             }

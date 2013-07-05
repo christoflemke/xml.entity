@@ -26,9 +26,9 @@ class Text extends AbstractElement implements Element
 
     private String value;
 
-    Text(final String value)
+    Text(final String value, final ImmutableElementFactory factory)
     {
-        super("#text");
+        super("#text", factory);
         this.value = value;
     }
 
@@ -39,18 +39,18 @@ class Text extends AbstractElement implements Element
 
     @Override @Nullable public String value()
     {
-        return value;
+        return this.value;
     }
 
     @Override @Nonnull public Element copy()
     {
-        return new Text(value);
+        return new Text(this.value, this.factory);
     }
 
     @Override
     public ImmutableElement immutableCopy()
     {
-        return ImmutableElementFactory.create().createText(value);
+        return this.factory.createText(this.value);
     }
 
     @Override public Element value(final String value)
@@ -61,6 +61,6 @@ class Text extends AbstractElement implements Element
 
     @Override public String toString()
     {
-        return value;
+        return this.value;
     }
 }

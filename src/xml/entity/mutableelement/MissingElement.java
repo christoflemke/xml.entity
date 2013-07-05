@@ -21,30 +21,33 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import xml.entity.immutableelement.ImmutableElement;
+import xml.entity.immutableelement.ImmutableElementFactory;
 
 class MissingElement implements Element
 {
+    private final ImmutableElementFactory factory;
     private final Element parent;
     private final String name;
     private String value;
 
-    MissingElement(final Element parent, final String name)
+    MissingElement(final Element parent, final String name, final ImmutableElementFactory factory)
     {
         super();
         this.parent = parent;
         this.name = name;
+        this.factory = factory;
     }
 
     protected Element getParent()
     {
-        return parent;
+        return this.parent;
     }
 
     @Override
     @Nonnull
     public String name()
     {
-        return name;
+        return this.name;
     }
     @Override
     @Nullable
@@ -68,7 +71,7 @@ class MissingElement implements Element
     @Nonnull
     public Element child(final String name)
     {
-        return new MissingElement(this, name);
+        return new MissingElement(this, name, this.factory);
     }
     @Override
     @Nonnull
@@ -85,19 +88,19 @@ class MissingElement implements Element
     @Nonnull
     public Element create()
     {
-        final Element p = parent.create();
+        final Element p = this.parent.create();
         final Element child;
-        if(name.startsWith("@"))
+        if(this.name.startsWith("@"))
         {
-            child = new Attribute(name.replaceFirst("@", ""), value);
+            child = new Attribute(this.name.replaceFirst("@", ""), this.value, this.factory);
         }
-        else if(name.startsWith("#"))
+        else if(this.name.startsWith("#"))
         {
-            child = new Text(value);
+            child = new Text(this.value, this.factory);
         }
         else
         {
-            child = new InternalElement(name);
+            child = new InternalElement(this.name, this.factory);
         }
         p.children().add(child);
         return child;
@@ -108,7 +111,7 @@ class MissingElement implements Element
     public Element attribute(final String string)
     {
         final String attrName = "@" + string;
-        return new MissingElement(this, attrName);
+        return new MissingElement(this, attrName, this.factory);
     }
     @Override
     public Element value(final String value)
@@ -127,7 +130,7 @@ class MissingElement implements Element
     @Override
     public String toString()
     {
-        return "Missing: " + name;
+        return "Missing: " + this.name;
     }
 
 }

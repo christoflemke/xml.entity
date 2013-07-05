@@ -24,28 +24,23 @@ import java.io.StringWriter;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import xml.entity.CommonData;
 import xml.entity.immutableelement.ImmutableElement;
+import xml.entity.parser.NullServiceContext;
 import xml.entity.serilalize.Serializer;
 
 import com.google.common.base.Charsets;
 
 public class TestSerializer
 {
-	private Serializer serializer;
-
-	@Before public void setup()
-	{
-		serializer = Serializer.createDefault();
-	}
+    private final Serializer serializer = NullServiceContext.create().serializer();
 
 	@Test public void testSingleElement()
 	{
         final ImmutableElement element = CommonData.singleElement.get().immutableCopy();
-		final String string = serializer.serialize(element).toString();
+		final String string = this.serializer.serialize(element).toString();
 		assertThat(string, is("<Foo/>"));
 	}
 
@@ -55,7 +50,7 @@ public class TestSerializer
         final ImmutableElement element = CommonData.singleElement.get().immutableCopy();
 
 		final StringWriter writer = new StringWriter();
-		serializer.serialize(element).toWriter(writer);
+		this.serializer.serialize(element).toWriter(writer);
 
 		assertThat(writer.toString(), is("<Foo/>"));
 	}
@@ -66,7 +61,7 @@ public class TestSerializer
         final ImmutableElement element = CommonData.singleElement.get().immutableCopy();
 
 		final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		serializer.serialize(element).toStream(stream, Charsets.UTF_8);
+		this.serializer.serialize(element).toStream(stream, Charsets.UTF_8);
 
 		final String actual = new String(stream.toByteArray(), Charsets.UTF_8);
 		assertThat(actual, is("<Foo/>"));
@@ -75,28 +70,28 @@ public class TestSerializer
 	@Test public void testSingleElementWithText()
 	{
         final ImmutableElement element = CommonData.singleElementWithText.get().immutableCopy();
-		final String string = serializer.serialize(element).toString();
+		final String string = this.serializer.serialize(element).toString();
 		assertThat(string, is("<Foo>bar</Foo>"));
 	}
 
 	@Test public void testSingleElementWithAttr()
 	{
         final ImmutableElement element = CommonData.singleElementWithAttr.get().immutableCopy();
-		final String string = serializer.serialize(element).toString();
+		final String string = this.serializer.serialize(element).toString();
 		assertThat(string, is("<Foo name=\"bar\"/>"));
 	}
 
 	@Test public void testSingleElementWithAttrAndText()
 	{
         final ImmutableElement element = CommonData.singleElementWithAttrAndText.get().immutableCopy();
-		final String string = serializer.serialize(element).toString();
+		final String string = this.serializer.serialize(element).toString();
 		assertThat(string, is("<Foo name=\"bar\">baz</Foo>"));
 	}
 
 	@Test public void testSingleElementWithSubNode()
 	{
         final ImmutableElement element = CommonData.singleElementWithSubNode.get().immutableCopy();
-		final String string = serializer.serialize(element).toString();
+		final String string = this.serializer.serialize(element).toString();
 		assertThat(string, is("<Foo><Bar/></Foo>"));
 	}
 }

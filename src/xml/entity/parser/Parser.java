@@ -20,6 +20,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Deque;
 
+import javax.inject.Inject;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -43,62 +44,91 @@ import com.google.common.collect.Lists;
 
 public class Parser
 {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+    private final ServiceContext serviceContext;
+    private final ImmutableElementFactory factory;
+
+    @Inject
+    public Parser(final ServiceContext serviceContext, final ImmutableElementFactory factory) throws SAXException, ParserConfigurationException
+    {
+        this.serviceContext = serviceContext;
+        this.factory = factory;
+    }
+
+    public static Parser create(final ServiceContext serviceContext, final ImmutableElementFactory factory)
+    {
+        try
+        {
+            return new Parser(serviceContext, factory);
+        }
+        catch(final SAXException e)
+        {
+            throw new RuntimeException("failed to create parser", e);
+        }
+        catch(final ParserConfigurationException e)
+        {
+            throw new RuntimeException("failed to create parser", e);
+        }
+    }
+
     private static class ImmutableHandler extends DefaultHandler implements ContentHandler
     {
         private final Logger logger = LoggerFactory.getLogger(getClass());
-        private final ImmutableElementFactory factory = ImmutableElementFactory.create();
+        private final ImmutableElementFactory factory;
         private final Deque<ImmutableList.Builder<ImmutableElement>> currentChildren = Lists.newLinkedList();
         private ImmutableElement root = null;
         private final ServiceContext serviceContext;
         private StringBuilder cdata = null;
 
-        public ImmutableHandler(final ServiceContext serviceContext)
+        public ImmutableHandler(final ServiceContext serviceContext, final ImmutableElementFactory factory)
         {
             this.serviceContext = serviceContext;
+            this.factory = factory;
         }
         @Override
         public void startElement(final String uri, final String localName, final String qName, final Attributes attributes)
         {
-            logger.debug("startElement: {}", qName);
-            if(cdata != null)
+            this.logger.debug("startElement: {}", qName);
+            if(this.cdata != null)
             {
-                currentChildren.peek().add(factory.createText(cdata.toString()));
-                cdata = null;
+                this.currentChildren.peek().add(this.factory.createText(this.cdata.toString()));
+                this.cdata = null;
             }
             final Builder<ImmutableElement> children = new ImmutableList.Builder<ImmutableElement>();
-            currentChildren.push(children);
+            this.currentChildren.push(children);
 
             for(int i = 0; i < attributes.getLength(); i++)
             {
                 final String name = attributes.getQName(i);
                 final String value = attributes.getValue(i);
-                final ImmutableElement element = factory.createAttr(name, value);
+                final ImmutableElement element = this.factory.createAttr(name, value);
                 children.add(element);
 
                 if(name.startsWith("xmlns:"))
                 {
-                    serviceContext.addNamespaceDecl(name.replaceFirst("xmlns:", ""), value);
+                    this.serviceContext.addNamespaceDecl(name.replaceFirst("xmlns:", ""), value);
                 }
             }
         }
         @Override
         public void endElement(final String uri, final String localName, final String qName)
         {
-            logger.debug("endElement: {}", qName);
-            final Builder<ImmutableElement> builder = currentChildren.pop();
-            if(cdata != null)
+            this.logger.debug("endElement: {}", qName);
+            final Builder<ImmutableElement> builder = this.currentChildren.pop();
+            if(this.cdata != null)
             {
-                builder.add(factory.createText(cdata.toString()));
-                cdata = null;
+                builder.add(this.factory.createText(this.cdata.toString()));
+                this.cdata = null;
             }
-            final ImmutableElement element = factory.createNode(qName, builder.build());
-            if(currentChildren.isEmpty())
+            final ImmutableElement element = this.factory.createNode(qName, builder.build());
+            if(this.currentChildren.isEmpty())
             {
-                root = element;
+                this.root = element;
             }
             else
             {
-                currentChildren.peek().add(element);
+                this.currentChildren.peek().add(element);
             }
         }
 
@@ -106,28 +136,28 @@ public class Parser
         public void characters(final char[] ch, final int start, final int length)
         {
             final String text = charsToString(ch, start, length);
-            logger.debug("characters: {}", text);
-            if(cdata == null)
+            this.logger.debug("characters: {}", text);
+            if(this.cdata == null)
             {
-                cdata = new StringBuilder(text.trim());
+                this.cdata = new StringBuilder(text.trim());
             }
             else
             {
-                cdata.append(text);
+                this.cdata.append(text);
             }
         }
 
         @Override
         public void skippedEntity(final String name)
         {
-            logger.debug("skippedEntity: {}", name);
+            this.logger.debug("skippedEntity: {}", name);
         }
 
         @Override
         public void ignorableWhitespace(final char[] ch, final int start, final int length)
         {
             final String ignored = charsToString(ch, start, length);
-            logger.debug("ignorableWhitespace: {}", ignored);
+            this.logger.debug("ignorableWhitespace: {}", ignored);
         }
 
         private static String charsToString(final char[] ch, final int start, final int length)
@@ -137,58 +167,32 @@ public class Parser
 
         public ImmutableElement root()
         {
-            return root;
+            return this.root;
         }
         @Override
         public void error(final SAXParseException e)
         {
-            logger.debug(e.getMessage());
+            this.logger.debug(e.getMessage());
         }
         @Override
         public void fatalError(final SAXParseException e)
         {
-            logger.debug(e.getMessage());
+            this.logger.debug(e.getMessage());
         }
         @Override
         public void warning(final SAXParseException e)
         {
-            logger.debug(e.getMessage());
+            this.logger.debug(e.getMessage());
         }
     }
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-	private final SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
-	private final ServiceContext serviceContext;
-	private Parser(final ServiceContext serviceContext) throws SAXException, ParserConfigurationException
-	{
-		this.serviceContext = serviceContext;
-	}
 
-	public static Parser createDefault()
-	{
-		return createFromContext(new NullServiceContext());
-	}
-	public static Parser createFromContext(final ServiceContext serviceContext)
-	{
-		try
-		{
-			return new Parser(serviceContext);
-		}
-		catch(final SAXException e)
-		{
-			throw new RuntimeException("failed to create parser", e);
-		}
-		catch(final ParserConfigurationException e)
-		{
-			throw new RuntimeException("failed to create parser", e);
-		}
-	}
 
     public ImmutableElement parse(final Reader reader) throws SAXException, IOException
 	{
-        final ImmutableHandler handler = new ImmutableHandler(serviceContext);
-        saxParser.parse(new InputSource(reader), handler);
-        logger.debug("root: {}", handler.root());
+        final ImmutableHandler handler = new ImmutableHandler(this.serviceContext, this.factory);
+        this.saxParser.parse(new InputSource(reader), handler);
+        this.logger.debug("root: {}", handler.root());
         return handler.root();
 	}
 

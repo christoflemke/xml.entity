@@ -32,91 +32,98 @@ import com.sun.istack.internal.NotNull;
 
 public abstract class ImmutableElements
 {
-	public static Predicate<ImmutableElement> byName(@Nonnull final String name)
-	{
-		Preconditions.checkNotNull(name);
-		return new Predicate<ImmutableElement>() {
+    public static Predicate<ImmutableElement> byName(@Nonnull final String name)
+    {
+        Preconditions.checkNotNull(name);
+        return new Predicate<ImmutableElement>() {
 
-			@Override
-			public boolean apply(@NotNull final ImmutableElement input)
-			{
-				return name.equals(input.name());
-			}
+            @Override
+            public boolean apply(@NotNull final ImmutableElement input)
+            {
+                return name.equals(input.name());
+            }
 
-			@Override public String toString()
-			{
-				return name;
-			}
-		};
-	}
+            @Override
+            public String toString()
+            {
+                return name;
+            }
+        };
+    }
 
-	public static Predicate<ImmutableElement> byValue(@Nonnull final String value)
-	{
-		Preconditions.checkNotNull(value);
-		return new Predicate<ImmutableElement>() {
+    public static Predicate<ImmutableElement> byValue(@Nonnull final String value)
+    {
+        Preconditions.checkNotNull(value);
+        return new Predicate<ImmutableElement>() {
 
-			@Override
-			public boolean apply(@NotNull final ImmutableElement input)
-			{
-				return value.equals(input.value());
-			}
+            @Override
+            public boolean apply(@NotNull final ImmutableElement input)
+            {
+                return value.equals(input.value());
+            }
 
-			@Override public String toString()
-			{
-				return "=" + value;
-			}
-		};
-	}
+            @Override
+            public String toString()
+            {
+                return "=" + value;
+            }
+        };
+    }
 
-	public static final Function<ImmutableElement, String> toValue = new Function<ImmutableElement, String>() {
+    public static final Function<ImmutableElement, String> toValue = new Function<ImmutableElement, String>() {
 
-		@Override public String apply(@Nonnull final ImmutableElement elm)
-		{
-			return elm.value();
-		}
-	};
+        @Override
+        public String apply(@Nonnull final ImmutableElement elm)
+        {
+            return elm.value();
+        }
+    };
 
-	private static Predicate<ImmutableElement> isAttribute = new Predicate<ImmutableElement>() {
+    private static Predicate<ImmutableElement> isAttribute = new Predicate<ImmutableElement>() {
 
-		@Override public boolean apply(@Nonnull final ImmutableElement e)
-		{
-			return e.name().startsWith("@");
-		}
-	};
+        @Override
+        public boolean apply(@Nonnull final ImmutableElement e)
+        {
+            return e.name().startsWith("@");
+        }
+    };
 
-	public static Predicate<ImmutableElement> isAttribute()
-	{
-		return isAttribute;
-	}
+    public static Predicate<ImmutableElement> isAttribute()
+    {
+        return isAttribute;
+    }
 
-	private static Predicate<ImmutableElement> isText = new Predicate<ImmutableElement>() {
+    private static Predicate<ImmutableElement> isText = new Predicate<ImmutableElement>() {
 
-		@Override public boolean apply(@Nonnull final ImmutableElement e)
-		{
-			return e.name().startsWith("#");
-		}
-	};
+        @Override
+        public boolean apply(@Nonnull final ImmutableElement e)
+        {
+            return e.name().startsWith("#");
+        }
+    };
 
-	public static Predicate<ImmutableElement> isText()
-	{
-		return isText;
-	}
+    public static Predicate<ImmutableElement> isText()
+    {
+        return isText;
+    }
 
-	public static Predicate<ImmutableElement> hasChild(final Predicate<ImmutableElement> matching)
-	{
-		return new Predicate<ImmutableElement>() {
+    public static Predicate<ImmutableElement> hasChild(final Predicate<ImmutableElement> matching)
+    {
+        return new Predicate<ImmutableElement>() {
 
-			@Override public boolean apply(@Nullable final ImmutableElement input)
-			{
+            @Override
+            public boolean apply(@Nullable final ImmutableElement input)
+            {
                 return Iterables.any(input.children(), matching);
-			}
+            }
 
-			@Override public String toString()
-			{
-				return matching.toString();
-			}
-		};
-	}
+            @Override
+            public String toString()
+            {
+                return matching.toString();
+            }
+        };
+    }
 
     public static class AttrPredicate implements Predicate<ImmutableElement>
     {

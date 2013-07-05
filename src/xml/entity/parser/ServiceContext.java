@@ -16,18 +16,29 @@
 package xml.entity.parser;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import xml.entity.immutableelement.ImmutableElement;
+import xml.entity.immutableelement.ImmutableElementFactory;
+import xml.entity.mutableelement.ElementFactory;
 import xml.entity.serilalize.Serializer;
 
 import com.google.common.collect.ImmutableMap;
 
 public interface ServiceContext
 {
-	void addNamespaceDecl(@Nonnull String prefix, @Nonnull String url);
-	String getUrlForPrefix(@Nonnull String prefix);
-    ImmutableMap<String, String> getNamespaceDecls(final ImmutableElement element);
-    void collectNamespaceDecls(final ImmutableElement element);
-	Parser createParser();
-	Serializer createSerializer();
+    void addNamespaceDecl(@Nonnull String prefix, @Nonnull String url);
+    @Nullable
+    String getUrlForPrefix(@Nonnull String prefix);
+    @Nonnull
+    ImmutableMap<String, String> getNamespaceDecls(@Nonnull final ImmutableElement element);
+    void collectNamespaceDecls(@Nonnull final ImmutableElement element);
+    @Nonnull
+    Parser parser();
+    @Nonnull
+    Serializer serializer();
+    @Nonnull
+    ImmutableElementFactory factory();
+    @Nonnull
+    ElementFactory mutableFactory();
 }

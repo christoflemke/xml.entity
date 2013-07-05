@@ -30,7 +30,6 @@ import java.io.StringReader;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -39,17 +38,12 @@ import xml.entity.immutableelement.ImmutableElement;
 
 public class TestParser
 {
-	private Parser parser;
-
-	@Before public void setup()
-	{
-		parser = Parser.createDefault();
-	}
+    private final Parser parser = NullServiceContext.create().parser();
 
 	@Test
 	public void testParseSimpleXml() throws SAXException, IOException
 	{
-        final ImmutableElement xmlElement = parser.parse(CommonData.simpleXml.getInput());
+        final ImmutableElement xmlElement = this.parser.parse(CommonData.simpleXml.getInput());
 		assertThat(xmlElement, nameIs("Foo"));
         final ImmutableElement child = xmlElement.child("Bar");
 		assertThat(child, nameIs("Bar"));
@@ -58,7 +52,7 @@ public class TestParser
 	@Test
 	public void testParseSimpleXmlWithWhiteSpace() throws SAXException, IOException
 	{
-        final ImmutableElement xmlElement = parser.parse(CommonData.simpleXmlWithWhitespace.getInput());
+        final ImmutableElement xmlElement = this.parser.parse(CommonData.simpleXmlWithWhitespace.getInput());
 		assertThat(xmlElement, nameIs("Foo"));
 		assertThat(xmlElement, hasChild(nameIs("Bar")));
 	}
@@ -66,7 +60,7 @@ public class TestParser
 	@Test
 	public void testParseWithWildCharacters() throws SAXException, IOException
 	{
-        final ImmutableElement xmlElement = parser.parse(CommonData.xmlWithWildCharacters.getInput());
+        final ImmutableElement xmlElement = this.parser.parse(CommonData.xmlWithWildCharacters.getInput());
 		assertThat(xmlElement, nameIs("Foo"));
         assertEquals(3, xmlElement.children().size());
         assertThat(xmlElement, hasChild(valueIs("booo")));
@@ -76,7 +70,7 @@ public class TestParser
 	@Test
 	public void testParseAttribute() throws SAXException, IOException
 	{
-        final ImmutableElement xmlElement = parser.parse(CommonData.withAttr.getInput());
+        final ImmutableElement xmlElement = this.parser.parse(CommonData.withAttr.getInput());
         final ImmutableElement child = xmlElement.child("Bar");
 		assertNotNull(child);
 		assertThat(child, hasChild(nameIs("@name")));
@@ -86,7 +80,7 @@ public class TestParser
 	@Test
 	public void testParseWithMultipeChildsWithSameName() throws SAXException, IOException
 	{
-        final ImmutableElement xmlElement = parser.parse(
+        final ImmutableElement xmlElement = this.parser.parse(
                 CommonData.xmlWithMultipleElementsWithSameName.getInput());
         final Collection<ImmutableElement> children = xmlElement.child("Collection").children();
 		assertThat(children.size(), is(2));
@@ -100,12 +94,12 @@ public class TestParser
 	@Test
 	public void testParseTextWithAttribute() throws SAXException, IOException
 	{
-		parser.parse(CommonData.withAttrAndText.getInput());
+		this.parser.parse(CommonData.withAttrAndText.getInput());
 	}
 
 	@Test public void testIgnoreComments() throws SAXException, IOException
 	{
-        final ImmutableElement element = parser.parse(CommonData.withComments.getInput());
+        final ImmutableElement element = this.parser.parse(CommonData.withComments.getInput());
 		assertThat(element, nameIs("Foo"));
 		assertThat(element.children().size(), is(1));
 		assertThat(element, hasChild(nameIs("Bar")));
@@ -115,7 +109,7 @@ public class TestParser
     public void specialCharacters() throws Exception
     {
         final String specialCharacters = "!@#$%^*(()_+�";
-        final ImmutableElement element = parser.parse(new StringReader("<Foo attr=\"" + specialCharacters + "\">" + specialCharacters + "</Foo>"));
+        final ImmutableElement element = this.parser.parse(new StringReader("<Foo attr=\"" + specialCharacters + "\">" + specialCharacters + "</Foo>"));
         assertThat(element, valueIs(specialCharacters));
         assertThat(element, hasAttr("attr").withValue(specialCharacters));
         assertThat(element.children().size(), equalTo(2));
@@ -125,7 +119,7 @@ public class TestParser
     public void specialUnicode() throws Exception
     {
         final String specialCharacters = "\\u0400\\u04FF";
-        final ImmutableElement element = parser.parse(new StringReader("<Foo attr=\"" + specialCharacters + "\">" + specialCharacters + "</Foo>"));
+        final ImmutableElement element = this.parser.parse(new StringReader("<Foo attr=\"" + specialCharacters + "\">" + specialCharacters + "</Foo>"));
         assertThat(element, valueIs(specialCharacters));
         assertThat(element, hasAttr("attr").withValue(specialCharacters));
         assertThat(element.children().size(), equalTo(2));
@@ -134,7 +128,7 @@ public class TestParser
     @Test
     public void escapedXmlInText() throws Exception
     {
-        final ImmutableElement element = parser.parse(new StringReader("<Foo>&lt;a/&gt;&quot;&amp;&apos;</Foo>"));
+        final ImmutableElement element = this.parser.parse(new StringReader("<Foo>&lt;a/&gt;&quot;&amp;&apos;</Foo>"));
         assertThat(element, valueIs("<a/>\"&'"));
         assertThat(element.children().size(), equalTo(1));
     }
@@ -142,7 +136,7 @@ public class TestParser
     @Test
     public void escapedXmlInAttr() throws Exception
     {
-        final ImmutableElement element = parser.parse(new StringReader("<Foo name=\"&lt;a/&gt;&quot;&amp;&apos;\"></Foo>"));
+        final ImmutableElement element = this.parser.parse(new StringReader("<Foo name=\"&lt;a/&gt;&quot;&amp;&apos;\"></Foo>"));
         assertThat(element, hasAttr("name").withValue("<a/>\"&'"));
         assertThat(element.children().size(), equalTo(1));
     }

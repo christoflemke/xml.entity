@@ -36,9 +36,9 @@ public class TestServiceContext
 
 	@Before public void setup()
 	{
-		context = new DefaultServiceContext();
-        parser = context.createParser();
-		serializer = context.createSerializer();
+        this.context = DefaultServiceContext.create();
+        this.parser = this.context.parser();
+		this.serializer = this.context.serializer();
 	}
 
     /*
@@ -47,8 +47,8 @@ public class TestServiceContext
     @Test
     public void testCollectDecls() throws SAXException
 	{
-        parser.parse("<Foo xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>");
-		assertThat(context.getUrlForPrefix("xsi"), is("http://www.w3.org/2001/XMLSchema-instance"));
+        this.parser.parse("<Foo xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>");
+		assertThat(this.context.getUrlForPrefix("xsi"), is("http://www.w3.org/2001/XMLSchema-instance"));
 	}
 
     /*
@@ -57,10 +57,10 @@ public class TestServiceContext
     @Test
     public void testLearnNamespace() throws SAXException
 	{
-        parser.parse("<Foo xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>"); // learn xsi
-        final Element element = factory.createNode("Foo");
+        this.parser.parse("<Foo xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>"); // learn xsi
+        final Element element = this.factory.createNode("Foo");
         element.child("Bar").attribute("xsi:nil").value("true");
-        final String asString = serializer.serialize(element.immutableCopy()).toString();
+        final String asString = this.serializer.serialize(element.immutableCopy()).toString();
 		assertThat(asString, containsString("<Foo xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"));
 	}
 
@@ -70,10 +70,10 @@ public class TestServiceContext
     @Test
     public void testAddNamespace()
     {
-        context.addNamespaceDecl("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        final Element element = factory.createNode("Foo");
+        this.context.addNamespaceDecl("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        final Element element = this.factory.createNode("Foo");
         element.child("Bar").attribute("xsi:nil").value("true");
-        final String asString = serializer.serialize(element.immutableCopy()).toString();
+        final String asString = this.serializer.serialize(element.immutableCopy()).toString();
         assertThat(asString, containsString("<Foo xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"));
     }
 }

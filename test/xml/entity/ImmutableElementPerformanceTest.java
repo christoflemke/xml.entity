@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import xml.entity.immutableelement.ImmutableElement;
 import xml.entity.immutableelement.ImmutableElementFactory;
+import xml.entity.parser.NullServiceContext;
 import xml.entity.parser.Parser;
 import xml.entity.select.dsl.ExpectedMatches;
 import xml.entity.serilalize.Serializer;
@@ -36,6 +37,8 @@ public class ImmutableElementPerformanceTest
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public @Rule TemporaryFolder tmpFolder = new TemporaryFolder();
+    private final Serializer serializer = NullServiceContext.create().serializer();
+    private final Parser parser = NullServiceContext.create().parser();
 
     private final class CharDomain extends DiscreteDomain<Character>
     {
@@ -72,12 +75,12 @@ public class ImmutableElementPerformanceTest
 
         public Timer()
         {
-            start = System.nanoTime();
+            this.start = System.nanoTime();
         }
 
         public long elapsedIn(final TimeUnit timeUnit)
         {
-            return timeUnit.convert(System.nanoTime() - start, TimeUnit.NANOSECONDS);
+            return timeUnit.convert(System.nanoTime() - this.start, TimeUnit.NANOSECONDS);
         }
     }
     final CharDomain domain = new CharDomain();
@@ -92,7 +95,7 @@ public class ImmutableElementPerformanceTest
 
         final String path = createPath(range);
 
-        logger.debug("Path + " + path);
+        this.logger.info("Path + " + path);
         Timer timer = new Timer();
 
         for(int i = 0; i < iterations; i++)
@@ -100,23 +103,23 @@ public class ImmutableElementPerformanceTest
             root.select().from(path).one();
         }
         final long time = timer.elapsedIn(TimeUnit.MILLISECONDS);
-        logger.debug("Select took {} ms", time);
+        this.logger.info("Select took {} ms", time);
 
         timer = new Timer();
-        logger.debug("Update");
+        this.logger.info("Update");
         for(int i = 0; i < iterations; i++)
         {
             root.update().from(path).setAttr("foo", "bar").expect(ExpectedMatches.exactlyOne()).element();
         }
-        logger.debug("Update took {} ms", timer.elapsedIn(TimeUnit.MILLISECONDS));
+        this.logger.info("Update took {} ms", timer.elapsedIn(TimeUnit.MILLISECONDS));
 
         timer = new Timer();
-        logger.debug("Delete");
+        this.logger.info("Delete");
         for(int i = 0; i < iterations; i++)
         {
             root.delete().from(path).expect(ExpectedMatches.exactlyOne()).element();
         }
-        logger.debug("Delete took {} ms", timer.elapsedIn(TimeUnit.MILLISECONDS));
+        this.logger.info("Delete took {} ms", timer.elapsedIn(TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -127,33 +130,33 @@ public class ImmutableElementPerformanceTest
         logRange(range);
         final ImmutableElement root = createTree(range);
 
-        final File newFile = tmpFolder.newFile();
-        logger.debug("Temp file: {}", newFile);
+        final File newFile = this.tmpFolder.newFile();
+        this.logger.info("Temp file: {}", newFile);
         final FileOutputStream stream = new FileOutputStream(newFile);
-        logger.debug("Start serialize");
+        this.logger.info("Start serialize");
         Timer timer = new Timer();
-        Serializer.createDefault().serialize(root).toStream(stream, Charsets.UTF_8);
+        this.serializer.serialize(root).toStream(stream, Charsets.UTF_8);
         stream.close();
-        logger.debug("Stop serialize : {} ms", timer.elapsedIn(TimeUnit.MILLISECONDS));
+        this.logger.info("Stop serialize : {} ms", timer.elapsedIn(TimeUnit.MILLISECONDS));
         final long sizeInMB = newFile.length() / (1024 * 1024);
-        logger.debug("File size: {} MB", sizeInMB);
+        this.logger.info("File size: {} MB", sizeInMB);
 
-        logger.debug("start parse");
+        this.logger.info("start parse");
         timer = new Timer();
-        Parser.createDefault().parse(new InputStreamReader(new FileInputStream(newFile), Charsets.UTF_8));
-        logger.debug("stop parse: {} ms", timer.elapsedIn(TimeUnit.MILLISECONDS));
+        this.parser.parse(new InputStreamReader(new FileInputStream(newFile), Charsets.UTF_8));
+        this.logger.info("stop parse: {} ms", timer.elapsedIn(TimeUnit.MILLISECONDS));
     }
 
     private void logRange(final Range<Character> range)
     {
         final int size = size(range);
-        logger.debug("[{},{}]", range.lowerEndpoint(), range.upperEndpoint());
-        logger.debug("domain size: {}", size);
+        this.logger.info("[{},{}]", range.lowerEndpoint(), range.upperEndpoint());
+        this.logger.info("domain size: {}", size);
     }
 
     private int size(final Range<Character> range)
     {
-        final ContiguousSet<Character> asSet = range.asSet(domain);
+        final ContiguousSet<Character> asSet = range.asSet(this.domain);
         final int size = asSet.size();
         return size;
     }
@@ -194,7 +197,7 @@ public class ImmutableElementPerformanceTest
             children = builder.build();
             i--;
         }
-        logger.debug("Nodes Constructed: {}" + nodesConstructed);
+        this.logger.info("Nodes Constructed: {}" + nodesConstructed);
 
         return factory.createNode("root", children);
     }

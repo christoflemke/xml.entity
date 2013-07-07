@@ -79,6 +79,7 @@
 		<ivy:publish 
 			resolver="local"
 			pubrevision="${version}"
+			overwrite="true"
 			artifactspattern="${artifacts.dir}/[module]-[revision]-[type].[ext]"
 		/>	
 	</target>

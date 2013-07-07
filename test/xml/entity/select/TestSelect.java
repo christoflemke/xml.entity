@@ -19,10 +19,10 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
-import static xml.entity.parser.matcher.ImmutableMatchers.hasChild;
-import static xml.entity.parser.matcher.ImmutableMatchers.isLeaf;
-import static xml.entity.parser.matcher.ImmutableMatchers.nameIs;
-import static xml.entity.parser.matcher.ImmutableMatchers.valueIs;
+import static xml.entity.immutableelement.ImmutableMatchers.hasChild;
+import static xml.entity.immutableelement.ImmutableMatchers.isLeaf;
+import static xml.entity.immutableelement.ImmutableMatchers.nameIs;
+import static xml.entity.immutableelement.ImmutableMatchers.valueIs;
 
 import java.io.IOException;
 
@@ -35,9 +35,9 @@ import org.xml.sax.SAXException;
 
 import xml.entity.CommonData;
 import xml.entity.immutableelement.ImmutableElement;
+import xml.entity.immutableelement.ImmutableMatchers;
 import xml.entity.parser.NullServiceContext;
 import xml.entity.parser.Parser;
-import xml.entity.parser.matcher.ImmutableMatchers;
 
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xml.entity.parser.matcher;
+package xml.entity.immutableelement;
 
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -24,7 +24,6 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
-import xml.entity.immutableelement.ImmutableElement;
 import xml.entity.select.dsl.NodeSelection;
 
 import com.google.common.base.Objects;

@@ -20,10 +20,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static xml.entity.parser.matcher.ImmutableMatchers.hasAttr;
-import static xml.entity.parser.matcher.ImmutableMatchers.hasChild;
-import static xml.entity.parser.matcher.ImmutableMatchers.nameIs;
-import static xml.entity.parser.matcher.ImmutableMatchers.valueIs;
+import static xml.entity.immutableelement.ImmutableMatchers.hasAttr;
+import static xml.entity.immutableelement.ImmutableMatchers.hasChild;
+import static xml.entity.immutableelement.ImmutableMatchers.nameIs;
+import static xml.entity.immutableelement.ImmutableMatchers.valueIs;
 
 import java.io.IOException;
 import java.io.StringReader;

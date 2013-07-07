@@ -18,7 +18,7 @@ package xml.entity.select;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
-import static xml.entity.parser.matcher.ImmutableMatchers.isAbsent;
+import static xml.entity.immutableelement.ImmutableMatchers.isAbsent;
 
 import org.junit.Test;
 

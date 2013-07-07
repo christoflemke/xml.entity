@@ -20,11 +20,11 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 import static xml.entity.immutableelement.ImmutableElements.attr;
 import static xml.entity.immutableelement.ImmutableElements.hasChild;
-import static xml.entity.parser.matcher.ImmutableMatchers.hasAttr;
-import static xml.entity.parser.matcher.ImmutableMatchers.hasChild;
-import static xml.entity.parser.matcher.ImmutableMatchers.isAbsent;
-import static xml.entity.parser.matcher.ImmutableMatchers.nameIs;
-import static xml.entity.parser.matcher.ImmutableMatchers.valueIs;
+import static xml.entity.immutableelement.ImmutableMatchers.hasAttr;
+import static xml.entity.immutableelement.ImmutableMatchers.hasChild;
+import static xml.entity.immutableelement.ImmutableMatchers.isAbsent;
+import static xml.entity.immutableelement.ImmutableMatchers.nameIs;
+import static xml.entity.immutableelement.ImmutableMatchers.valueIs;
 import static xml.entity.select.dsl.ExpectedMatches.exactlyOne;
 
 import org.junit.Rule;

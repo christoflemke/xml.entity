@@ -17,8 +17,6 @@ package xml.entity.immutableelement;
 
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertThat;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -43,7 +41,7 @@ public class ImmutableMatchers
                 @Override
                 public boolean matches(final Object item)
                 {
-                    Matcher<ImmutableElement> allOf = allOf(getChildMatcher(), valueIs(value));
+                    final Matcher<ImmutableElement> allOf = allOf(getChildMatcher(), valueIs(value));
                     return hasChild(allOf).matches(item);
                 }
 
@@ -72,7 +70,7 @@ public class ImmutableMatchers
             if(object instanceof ImmutableElement)
             {
                 final ImmutableElement parent = (ImmutableElement) object;
-                return hasItem(childMatcher).matches(parent.children());
+                return hasItem(this.childMatcher).matches(parent.children());
             }
             else
             {
@@ -81,13 +79,13 @@ public class ImmutableMatchers
         }
         public Matcher<ImmutableElement> getChildMatcher()
         {
-            return childMatcher;
+            return this.childMatcher;
         }
         @Override
         public void describeTo(final Description description)
         {
             description.appendText("had child that matches: ");
-            childMatcher.describeTo(description);
+            this.childMatcher.describeTo(description);
         }
     }
 
@@ -104,9 +102,15 @@ public class ImmutableMatchers
 			@Override
 			public boolean matches(final Object object)
 			{
-                assertThat(object, instanceOf(ImmutableElement.class));
-                final ImmutableElement e = (ImmutableElement) object;
-				return Objects.equal(name, e.name());
+                if(object instanceof ImmutableElement)
+                {
+                    final ImmutableElement e = (ImmutableElement) object;
+                    return Objects.equal(name, e.name());
+                }
+                else
+                {
+                    return false;
+                }
 			}
 
 			@Override
@@ -130,9 +134,15 @@ public class ImmutableMatchers
 			@Override
 			public boolean matches(final Object object)
 			{
-                assertThat(object, instanceOf(ImmutableElement.class));
+                if(object instanceof ImmutableElement)
+                {
                 final ImmutableElement e = (ImmutableElement) object;
 				return Objects.equal(value, e.value());
+                }
+                else
+                {
+                    return false;
+                }
 			}
 
 			@Override
@@ -150,9 +160,15 @@ public class ImmutableMatchers
 			@Override
 			public boolean matches(final Object object)
 			{
-                assertThat(object, instanceOf(ImmutableElement.class));
-                final ImmutableElement e = (ImmutableElement) object;
-				return e.children().isEmpty();
+                if(object instanceof ImmutableElement)
+                {
+                    final ImmutableElement e = (ImmutableElement) object;
+                    return e.children().isEmpty();
+                }
+                else
+                {
+                    return false;
+                }
 			}
 
 			@Override

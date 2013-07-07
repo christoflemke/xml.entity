@@ -1,32 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ivy-module version="2.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-	<info organisation="lemke.christof" module="xml.entity">
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+	<info organisation="lemke.christof" module="xml.entity" status="null">
 		<license name="apache2" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
 	</info>
 	
 	<configurations>
-		<conf name="master" />
+		<conf name="master"/>
 		<conf name="default" extends="master"/>
 		<conf name="test" visibility="private"/>
 	</configurations>
 
 	<publications>
-		<artifact conf="master" type="jar" />
+		<artifact conf="master" type="jar"/>
 	</publications>
 
 	<dependencies defaultconf="*->default">
 		<dependency org="com.google.guava" name="guava" rev="13.0.1"/>
 		<dependency org="com.google.code.findbugs" name="jsr305" rev="2.0.1"/>
 		<dependency org="javax.inject" name="javax.inject" rev="1"/>
-		<dependency org="org.slf4j" name="slf4j-api" rev="1.6.4"/>
+		<dependency org="org.slf4j" name="slf4j-api" rev="1.6.6"/>
 		
-		<dependency org="org.slf4j" name="jul-to-slf4j" rev="1.6.4" conf="test->default"/>
-		<dependency org="org.slf4j" name="jcl-over-slf4j" rev="1.6.4" conf="test->default"/>
+		<dependency org="org.slf4j" name="jul-to-slf4j" rev="1.6.6" conf="test->default"/>
+		<dependency org="org.slf4j" name="jcl-over-slf4j" rev="1.6.6" conf="test->default"/>
 
 		<dependency org="ch.qos.logback" name="logback-core" rev="1.0.6" conf="test->default"/>
-		<dependency org="ch.qos.logback" name="logback-classic" rev="1.0.6" conf="test->default"/>
+		<dependency org="ch.qos.logback" name="logback-classic" rev="1.0.7" conf="test->default"/>
         
 		<dependency org="junit" name="junit" rev="4.11" conf="test->default"/>
 		<dependency org="org.mockito" name="mockito-core" rev="1.9.5" conf="test->default"/>

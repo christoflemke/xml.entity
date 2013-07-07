@@ -44,7 +44,8 @@ public class ImmutableMatchers
                 @Override
                 public boolean matches(final Object item)
                 {
-                    return hasChild(allOf(getChildMatcher(), valueIs(value))).matches(item);
+                    Matcher<ImmutableElement> allOf = allOf(getChildMatcher(), valueIs(value));
+                    return hasChild(allOf).matches(item);
                 }
 
                 @Override

@@ -22,7 +22,6 @@ import static xml.entity.immutableelement.ImmutableElements.isText;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,12 +52,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
@@ -266,80 +261,6 @@ public class DefaultSelector implements Selector
         }
     }
 
-    private final class NodeSelectImpl implements NodeSelection
-    {
-        private final class SelectVisitor implements ISelectionVisitor, Supplier<ImmutableList<ImmutableElement>>
-        {
-            private final Builder<ImmutableElement> builder;
-            private SelectVisitor()
-            {
-                this.builder = ImmutableList.builder();
-            }
-
-            @Override
-            public ImmutableList<ImmutableElement> get()
-            {
-                select(NodeSelectImpl.this.path, NodeSelectImpl.this.element, this);
-                return this.builder.build();
-            }
-            @Override
-            public void mismatch(final ImmutableElement element)
-            {}
-            @Override
-            public void match(final ImmutableElement element)
-            {
-                if(NodeSelectImpl.this.expr.apply(element))
-                {
-                    this.builder.add(element);
-                }
-            }
-            @Override
-            public void leaveChild(final ImmutableElement element)
-            {}
-            @Override
-            public void enterChild(final ImmutableElement element)
-            {}
-        }
-        private final ImmutableElement element;
-        private final Path path;
-        private final Predicate<ImmutableElement> expr;
-        private final Supplier<ImmutableList<ImmutableElement>> supplier = Suppliers.memoize(new SelectVisitor());
-        public NodeSelectImpl(final ImmutableElement element, final Path path, final Predicate<ImmutableElement> expr)
-        {
-            this.element = element;
-            this.path = path;
-            this.expr = expr;
-        }
-        @Override
-        @Nonnull
-        public NodeSelection where(final Predicate<ImmutableElement> expr)
-        {
-            return new NodeSelectImpl(this.element, this.path, Predicates.and(expr, this.expr));
-        }
-        @Override
-        @Nonnull
-        public ImmutableElement one()
-        {
-            if(all().isEmpty())
-            {
-                throw new NoSuchElementException("no element found at path: " + this.path);
-            }
-            return Iterables.getOnlyElement(all());
-        }
-        @Override
-        @Nonnull
-        public FluentIterable<ImmutableElement> iterable()
-        {
-            return FluentIterable.from(all());
-        }
-        @Override
-        @Nonnull
-        public ImmutableList<ImmutableElement> all()
-        {
-            return this.supplier.get();
-        }
-    }
-
     private abstract class AbstractSelectOperation<T extends WithWhere<T>> implements WithWhere<T>
     {
         private final ImmutableElement root;
@@ -383,7 +304,8 @@ public class DefaultSelector implements Selector
         @Override
         public final T where(final Predicate<ImmutableElement> expr)
         {
-            return create(this.root, this.path, Predicates.and(getExpr(), expr), this.expectedMatches);
+            Predicate<ImmutableElement> and = Predicates.and(getExpr(), expr);
+            return create(this.root, this.path, and, this.expectedMatches);
         }
 
         abstract T create(ImmutableElement root, Path path, Predicate<ImmutableElement> expr, ExpectedMatches expectedMatches);
@@ -593,7 +515,7 @@ public class DefaultSelector implements Selector
             {
                 final Path parsed = DefaultSelector.this.pathParser.parse(path);
                 final Predicate<ImmutableElement> expr = Predicates.alwaysTrue();
-                return new NodeSelectImpl(element, parsed, expr);
+                return new NodeSelectImpl(DefaultSelector.this, element, parsed, expr);
             }
         };
     }

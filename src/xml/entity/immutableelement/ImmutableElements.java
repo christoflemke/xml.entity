@@ -28,7 +28,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
-import com.sun.istack.internal.NotNull;
 
 public abstract class ImmutableElements
 {
@@ -38,7 +37,7 @@ public abstract class ImmutableElements
         return new Predicate<ImmutableElement>() {
 
             @Override
-            public boolean apply(@NotNull final ImmutableElement input)
+            public boolean apply(@Nonnull final ImmutableElement input)
             {
                 return name.equals(input.name());
             }
@@ -57,7 +56,7 @@ public abstract class ImmutableElements
         return new Predicate<ImmutableElement>() {
 
             @Override
-            public boolean apply(@NotNull final ImmutableElement input)
+            public boolean apply(@Nonnull final ImmutableElement input)
             {
                 return value.equals(input.value());
             }
@@ -138,7 +137,7 @@ public abstract class ImmutableElements
         @Override
         public boolean apply(@Nullable final ImmutableElement element)
         {
-            return ("@" + name).equals(element.name());
+            return ("@" + this.name).equals(element.name());
         }
 
         public Predicate<ImmutableElement> value(final String value)

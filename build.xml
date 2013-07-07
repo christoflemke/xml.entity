@@ -1,0 +1,85 @@
+<project name="xml.entity" default="build" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<property file="project.properties"/>
+
+
+	<target name="clean">
+		<delete dir="${tmp.dir}"/>
+		<mkdir dir="${tmp.dir}"/>
+	</target>
+
+	<target name="retrieve">
+		<ivy:retrieve 
+			pattern="${lib.dir}/[conf]/[organisation]/[module]-[revision]-[type].[ext]"
+			sync="true"
+		/>
+		<path id="core.lib.path.id">
+			<fileset dir="${lib.dir}/master" includes="**/*.jar"/>
+		</path>
+		<path id="test.lib.path.id">
+			<fileset dir="${lib.dir}/test"  includes="**/*.jar"/>
+		</path>
+	</target>
+
+	<target name="compile" depends="clean, retrieve">
+		<mkdir dir="${src.bin.dir}"/>
+		<javac 
+			srcdir="${src.dir}" 
+			destdir="${src.bin.dir}" 
+			classpathref="core.lib.path.id"
+			includeantruntime="false"
+			target="1.6"
+			source="1.6"
+		/>
+
+		<path id="bin.source.path.id" path="${src.bin.dir}">
+		</path>
+
+		<mkdir dir="${test.bin.dir}"/>
+		<javac 
+			srcdir="${test.dir}" 
+			destdir="${test.bin.dir}" 
+			includeantruntime="false"
+			target="1.6"
+			source="1.6">
+			<classpath refid="bin.source.path.id"/>
+			<classpath refid="test.lib.path.id"/>
+		</javac>
+	</target>
+
+	<path id="junit.test.path.id">
+		<path path="${src.bin.dir}"/>
+					<path path="${test.bin.dir}"/>
+					<fileset dir="${lib.dir}">
+						<include name="**/*.jar"/>
+					</fileset>
+	</path>
+	
+	<target name="test" depends="compile">
+		<junit>
+			<classpath refid="junit.test.path.id"></classpath>
+			<formatter type="xml" />
+			<test name="xml.entity.AllTests" outfile="${tmp.dir}/results"></test>
+		</junit>
+	</target>
+	
+	<target name="build-jar" depends="test">
+		<mkdir dir="${artifacts.dir}"/>
+		<jar destfile="${artifacts.dir}/xml.entity-${version}-jar.jar">
+			<fileset dir="${src.bin.dir}"></fileset>
+			<manifest>
+				<attribute name="version" value="${version}"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="build" depends="build-jar"/>
+	
+	<target name="publish" depends="build-jar">
+		<ivy:publish 
+			resolver="local"
+			pubrevision="${version}"
+			artifactspattern="${artifacts.dir}/[module]-[revision]-[type].[ext]"
+		/>	
+	</target>
+</project>

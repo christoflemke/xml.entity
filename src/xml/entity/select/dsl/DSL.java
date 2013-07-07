@@ -19,11 +19,11 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import xml.entity.immutableelement.ImmutableElement;
 
 import com.google.common.base.Predicate;
-import com.sun.istack.internal.Nullable;
 
 public interface DSL
 {

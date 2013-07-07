@@ -26,6 +26,7 @@ import static xml.entity.parser.matcher.ImmutableMatchers.valueIs;
 
 import java.io.IOException;
 
+import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
@@ -110,10 +111,13 @@ public class TestSelect
         final ImmutableElement element = this.parser.parse(CommonData.xmlWithMultipleElementsWithSameName.getInput());
         final ImmutableList<ImmutableElement> selected = element.select().from("Foo/Collection/*").all();
 		assertThat(selected.size(), is(2));
-		assertThat(selected, hasItem(nameIs("Bar")));
+		Matcher<Iterable<? super ImmutableElement>> matcher = hasItem(nameIs("Bar"));
+        assertThat(selected, matcher);
         assertThat(Collections2.filter(selected, xml.entity.immutableelement.ImmutableElements.byName("Bar")).size(), is(2));
-		assertThat(selected, hasItem(valueIs("baz")));
-		assertThat(selected, hasItem(valueIs("moin")));
+        matcher = hasItem(valueIs("baz"));
+        assertThat(selected, matcher);
+        matcher = hasItem(valueIs("moin"));
+        assertThat(selected, matcher);
 	}
 
     @Test

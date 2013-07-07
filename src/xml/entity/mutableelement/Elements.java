@@ -25,7 +25,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
-import com.sun.istack.internal.NotNull;
 
 public abstract class Elements
 {
@@ -35,7 +34,7 @@ public abstract class Elements
 		return new Predicate<Element>() {
 
 			@Override
-			public boolean apply(@NotNull final Element input)
+            public boolean apply(@Nonnull final Element input)
 			{
 				return name.equals(input.name());
 			}
@@ -53,7 +52,7 @@ public abstract class Elements
 		return new Predicate<Element>() {
 
 			@Override
-			public boolean apply(@NotNull final Element input)
+            public boolean apply(@Nonnull final Element input)
 			{
 				return value.equals(input.value());
 			}

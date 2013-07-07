@@ -11,7 +11,7 @@
 	</configurations>
 
 	<publications>
-		<artifact conf="master" type="jar"/>
+		<artifact conf="master" type="jar" ext="jar"/>
 	</publications>
 
 	<dependencies defaultconf="*->default">
@@ -23,7 +23,6 @@
 		<dependency org="org.slf4j" name="jul-to-slf4j" rev="1.6.6" conf="test->default"/>
 		<dependency org="org.slf4j" name="jcl-over-slf4j" rev="1.6.6" conf="test->default"/>
 
-		<dependency org="ch.qos.logback" name="logback-core" rev="1.0.6" conf="test->default"/>
 		<dependency org="ch.qos.logback" name="logback-classic" rev="1.0.7" conf="test->default"/>
         
 		<dependency org="junit" name="junit" rev="4.11" conf="test->default"/>

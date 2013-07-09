@@ -169,4 +169,18 @@ public abstract class ImmutableElements
     {
         return and(not(isAttribute), not(isText));
     }
+
+    private static final Function<ImmutableElement, String> toName = new Function<ImmutableElement, String>() {
+
+        @Override
+        @Nullable
+        public String apply(@Nullable final ImmutableElement input)
+        {
+            return input.name();
+        }
+    };
+    public static Function<ImmutableElement, String> toName()
+    {
+        return toName;
+    }
 }

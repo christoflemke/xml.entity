@@ -18,12 +18,12 @@ package xml.entity.immutableelement;
 import java.util.NoSuchElementException;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import xml.entity.select.dsl.DSL;
 import xml.entity.select.dsl.DSL.Join;
 
 import com.google.common.collect.ImmutableList;
-import com.sun.istack.internal.Nullable;
 
 public interface ImmutableElement
 {

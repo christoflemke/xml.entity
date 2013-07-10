@@ -47,14 +47,7 @@ abstract class AbstractElement implements ImmutableElement
     @Nonnull
     public ImmutableList<ImmutableElement> children()
     {
-        throw new IllegalStateException("node " + this + " has no children");
-    }
-
-    @Override
-    @Nonnull
-    public ImmutableList<ImmutableElement> children(final String name)
-    {
-        throw new IllegalStateException("node " + this + " has no children");
+        return ImmutableList.of();
     }
 
     @Override

@@ -15,8 +15,6 @@
  */
 package xml.entity.immutableelement;
 
-import java.util.Collection;
-
 import javax.annotation.Nonnull;
 
 import xml.entity.select.Selector;
@@ -52,7 +50,10 @@ class InternalElement extends AbstractElement implements ImmutableElement
 	@Override
 	public ImmutableElement child(final String name)
 	{
-		final Collection<ImmutableElement> collection = children(name);
+        final FluentIterable<ImmutableElement> collection = FluentIterable
+                .from(children)
+                .filter(ImmutableElements.byName(name));
+
         return Iterables.getOnlyElement(collection);
 	}
 
@@ -62,13 +63,6 @@ class InternalElement extends AbstractElement implements ImmutableElement
     public ImmutableList<ImmutableElement> children()
     {
         return children;
-    }
-
-    @Override
-    @Nonnull
-    public ImmutableList<ImmutableElement> children(final String name)
-    {
-        return FluentIterable.from(children).filter(ImmutableElements.byName(name)).toImmutableList();
     }
 
     @Override public String toString()

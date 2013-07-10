@@ -20,11 +20,17 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 
 import xml.entity.immutableelement.ImmutableElement;
 
 import com.google.common.base.Predicate;
 
+/**
+ * All instances returned from this interface are immutable. No work will be
+ * performed until the result is requested.
+ */
+@Immutable
 public interface DSL
 {
     /**
@@ -56,6 +62,7 @@ public interface DSL
          * @return The next state of the statement
          */
         T where(@Nonnull Predicate<ImmutableElement> expr);
+
         /**
          * Limit the allow number of affected nodes. See {@link ExpectedMatches} for applicable predicates if the number of affected nodes does not match the expected expression the statement will result in an {@link DSLException}
          * 
@@ -64,6 +71,7 @@ public interface DSL
          * @return The next state of the statement
          */
         T expect(@Nonnull ExpectedMatches matches);
+
         /**
          * Execute the statement. No actions will be performed be the call to this method.
          * 
@@ -110,6 +118,7 @@ public interface DSL
              * @return The next state of the statement
              */
             public InsertInto values(@Nonnull List<ImmutableElement> values);
+
             /**
              * Insert this value at the chosen location(s) If the supplied path and expressions match multiple elements, all elements will be updated.
              * 
@@ -147,6 +156,7 @@ public interface DSL
              */
             @Nonnull
             NodeUpdate setAttr(@Nonnull String name, @Nullable String value);
+
             /**
              * Set the text of the selected element(s) Will replace all existing text content. The text will be inserted after all other sub elements. If the text is null, all text content will be removed from the selected element(s).
              * 

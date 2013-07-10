@@ -29,8 +29,20 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 
+/**
+ * The {@link Predicate}s returned by this class will expect all elements, in
+ * the collection they are applied to, to be non null
+ */
 public abstract class ImmutableElements
 {
+    /**
+     * Filter elements by name. For filtering attributes use
+     * {@link #attr(String)} and for text {@link #isText()}.
+     * 
+     * @param name
+     *            The name the resulting elements should match
+     * @return A predicate matching the given name
+     */
     public static Predicate<ImmutableElement> byName(@Nonnull final String name)
     {
         Preconditions.checkNotNull(name);
@@ -50,6 +62,12 @@ public abstract class ImmutableElements
         };
     }
 
+    /**
+     * Match nodes by their value.
+     * 
+     * @param value
+     * @return
+     */
     public static Predicate<ImmutableElement> byValue(@Nonnull final String value)
     {
         Preconditions.checkNotNull(value);
@@ -69,6 +87,9 @@ public abstract class ImmutableElements
         };
     }
 
+    /**
+     * Transforms a node to its value by calling .value().
+     */
     public static final Function<ImmutableElement, String> toValue = new Function<ImmutableElement, String>() {
 
         @Override
@@ -87,6 +108,11 @@ public abstract class ImmutableElements
         }
     };
 
+    /**
+     * Test if a node is an attribute
+     * 
+     * @return
+     */
     public static Predicate<ImmutableElement> isAttribute()
     {
         return isAttribute;
@@ -101,11 +127,24 @@ public abstract class ImmutableElements
         }
     };
 
+    /**
+     * Test if a node is a text node
+     * 
+     * @return
+     */
     public static Predicate<ImmutableElement> isText()
     {
         return isText;
     }
 
+    /**
+     * Test if this node has a child matching the given predicate.
+     * 
+     * @param matching
+     *            This predicate will be applied to the children of the matched
+     *            node.
+     * @return true if any child matches the given predicate.
+     */
     public static Predicate<ImmutableElement> hasChild(final Predicate<ImmutableElement> matching)
     {
         return new Predicate<ImmutableElement>() {
@@ -140,6 +179,12 @@ public abstract class ImmutableElements
             return ("@" + this.name).equals(element.name());
         }
 
+        /**
+         * Does attribute also match the given value.
+         * 
+         * @param value
+         * @return True if name and value match
+         */
         public Predicate<ImmutableElement> value(final String value)
         {
             return Predicates.and(this, byValue(value));
@@ -147,11 +192,24 @@ public abstract class ImmutableElements
 
     }
 
+    /**
+     * Match attributes by their name.
+     * 
+     * @param name
+     *            The attribute name without '@'
+     * @return
+     */
     public static AttrPredicate attr(final String name)
     {
         return new AttrPredicate(name);
     }
 
+    /**
+     * Does a path from the matched node matching the given path.
+     * 
+     * @param path
+     * @return
+     */
     public static Predicate<ImmutableElement> hasPath(final String path)
     {
         return new Predicate<ImmutableElement>() {
@@ -165,6 +223,12 @@ public abstract class ImmutableElements
         };
     }
 
+    /**
+     * Is this node neither an attribute or a text node. The element can be an
+     * child.
+     * 
+     * @return
+     */
     public static Predicate<ImmutableElement> isInternal()
     {
         return and(not(isAttribute), not(isText));
@@ -179,6 +243,12 @@ public abstract class ImmutableElements
             return input.name();
         }
     };
+
+    /**
+     * Transform a node to its name by calling .name();
+     * 
+     * @return
+     */
     public static Function<ImmutableElement, String> toName()
     {
         return toName;

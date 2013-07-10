@@ -36,6 +36,10 @@ import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
+/**
+ * A path consists of a list of expressions seperated by '/' An expression can
+ * be: the name of a node or '*' for any node.
+ */
 @Immutable
 public class PathParser
 {

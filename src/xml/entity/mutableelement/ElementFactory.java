@@ -30,21 +30,49 @@ public class ElementFactory
         this.immutableFactory = factory;
     }
 
+    /**
+     * Create a new instace of this factory.
+     * 
+     * @return A new instance.
+     */
     public static ElementFactory create()
 	{
         return new ElementFactory(ImmutableElementFactory.create());
 	}
 
+    /**
+     * Create a new element node with the given name.
+     * 
+     * @param name
+     *            The element name.
+     * @return A new node.
+     */
 	public Element createNode(final String name)
 	{
         return new InternalElement(name, this.immutableFactory);
 	}
 
+    /**
+     * Create a attribute.
+     * 
+     * @param name
+     *            The name of the attribute.
+     * @param value
+     *            The value of the attribute.
+     * @return A new attribute
+     */
 	public Element createAttr(final String name, final String value)
 	{
         return new Attribute(name, value, this.immutableFactory);
 	}
 
+    /**
+     * Create a new text node.
+     * 
+     * @param value
+     *            The text content.
+     * @return A new node.
+     */
 	public Element createText(final String value)
 	{
         return new Text(value, this.immutableFactory);

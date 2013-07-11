@@ -49,7 +49,7 @@ public interface Element
     Collection<Element> children();
 
     /**
-     * This will always create a missing child
+     * This will always create a missing child!
      */
     @Nonnull
     Element child(String name);

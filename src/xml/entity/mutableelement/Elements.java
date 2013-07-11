@@ -28,6 +28,9 @@ import com.google.common.collect.Iterables;
 
 public abstract class Elements
 {
+    /**
+     * Match elements by name.
+     */
 	public static Predicate<Element> byName(@Nonnull final String name)
 	{
 		Preconditions.checkNotNull(name);
@@ -46,6 +49,9 @@ public abstract class Elements
 		};
 	}
 
+    /**
+     * Match elements by value
+     */
 	public static Predicate<Element> byValue(@Nonnull final String value)
 	{
 		Preconditions.checkNotNull(value);
@@ -64,6 +70,9 @@ public abstract class Elements
 		};
 	}
 
+    /**
+     * Transform elements to their value.
+     */
 	public static final Function<Element, String> toValue = new Function<Element, String>() {
 
 		@Override public String apply(@Nonnull final Element elm)
@@ -80,6 +89,9 @@ public abstract class Elements
 		}
 	};
 
+    /**
+     * Match attribute nodes.
+     */
 	public static Predicate<Element> isAttribute()
 	{
 		return isAttribute;
@@ -93,6 +105,9 @@ public abstract class Elements
 		}
 	};
 
+    /**
+     * Transform mutable to immutable elements.
+     */
     public static Function<Element, ImmutableElement> immutableCopy = new Function<Element, ImmutableElement>() {
 
         @Override
@@ -103,6 +118,9 @@ public abstract class Elements
         }
     };
 
+    /**
+     * Copy elements.
+     */
     public static final Function<Element, Element> copy = new Function<Element, Element>() {
 
         @Override public Element apply(@Nonnull final Element element)
@@ -111,11 +129,22 @@ public abstract class Elements
         }
     };
 
+    /**
+     * Match text nodes
+     */
 	public static Predicate<Element> isText()
 	{
 		return isText;
 	}
 
+    /**
+     * Create a predicate that matches if the node has an child that matches the
+     * given predicate.
+     * 
+     * @param matching
+     *            This predicate will be applied the the children of the node.
+     * @return true if any child matches.
+     */
 	public static Predicate<Element> hasChild(final Predicate<Element> matching)
 	{
 		return new Predicate<Element>() {
@@ -132,6 +161,15 @@ public abstract class Elements
 		};
 	}
 
+    /**
+     * Match attribute nodes with the given name and value.
+     * 
+     * @param name
+     *            The attribute name.
+     * @param value
+     *            The attribute value.
+     * @return true if name and value match.
+     */
     @SuppressWarnings("unchecked")
     public static Predicate<Element> attr(final String name, final String value)
     {

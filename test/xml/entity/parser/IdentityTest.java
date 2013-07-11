@@ -47,16 +47,16 @@ public class IdentityTest
 	{
 		return Arrays.asList(
 				new Object[][] {
-								{ CommonData.simpleXml, true },
-								{ CommonData.simpleXmlWithWhitespace, false },
-								{ CommonData.withAttr, true },
-								{ CommonData.withAttrAndText, true },
-								{ CommonData.xmlWithMultipleElementsWithSameName, true },
-								{ CommonData.xmlWithWildCharacters, true },
-                                { CommonData.xmlWithMultipleWildCharacters, true },
-								{ CommonData.xmlWithHeader, false },
-                                { CharStreams.newReaderSupplier("<Foo><Bar i=\"1\"/><Baz i=\"2\"/><Bar i=\"3\"/><Baz i=\"4\"/></Foo>"), true },
-                                { CharStreams.newReaderSupplier("<Foo name=\"&lt;a/&gt;&quot;&amp;&apos;\">&lt;a/&gt;&quot;&amp;&apos;</Foo>"), false }
+                                { CommonData.simpleXml, Boolean.TRUE },
+                                { CommonData.simpleXmlWithWhitespace, Boolean.FALSE },
+                                { CommonData.withAttr, Boolean.TRUE },
+                                { CommonData.withAttrAndText, Boolean.TRUE },
+                                { CommonData.xmlWithMultipleElementsWithSameName, Boolean.TRUE },
+                                { CommonData.xmlWithWildCharacters, Boolean.TRUE },
+                                { CommonData.xmlWithMultipleWildCharacters, Boolean.TRUE },
+                                { CommonData.xmlWithHeader, Boolean.FALSE },
+                                { CharStreams.newReaderSupplier("<Foo><Bar i=\"1\"/><Baz i=\"2\"/><Bar i=\"3\"/><Baz i=\"4\"/></Foo>"), Boolean.TRUE },
+                                { CharStreams.newReaderSupplier("<Foo name=\"&lt;a/&gt;&quot;&amp;&apos;\">&lt;a/&gt;&quot;&amp;&apos;</Foo>"), Boolean.FALSE }
 				});
 	}
 

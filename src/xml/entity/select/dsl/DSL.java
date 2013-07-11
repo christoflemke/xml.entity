@@ -55,7 +55,7 @@ public interface DSL
     public interface WithWhere<T extends WithWhere<T>>
     {
         /**
-         * Reduce the number of affected nodes by supplying and {@link Predicate}
+         * Reduce the number of affected nodes by supplying a {@link Predicate}
          * 
          * @param expr
          *            An {@link Predicate} for an {@link ImmutableElement}
@@ -64,10 +64,14 @@ public interface DSL
         T where(@Nonnull Predicate<ImmutableElement> expr);
 
         /**
-         * Limit the allow number of affected nodes. See {@link ExpectedMatches} for applicable predicates if the number of affected nodes does not match the expected expression the statement will result in an {@link DSLException}
+         * Limit the allow number of affected nodes. See {@link ExpectedMatches}
+         * for applicable predicates if the number of affected nodes does not
+         * match the expected expression the statement will result in an
+         * {@link DSLException}
          * 
          * @param matches
-         *            An predicate that restricts how many nodes are allowed to be affected
+         *            An predicate that restricts how many nodes are allowed to
+         *            be affected
          * @return The next state of the statement
          */
         T expect(@Nonnull ExpectedMatches matches);

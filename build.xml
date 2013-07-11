@@ -65,18 +65,26 @@
 		</junit>
 	</target>
 
-	<target name="build-jar" depends="test">
+	<target name="-define-additional-jar-files">
+		<fileset dir="${basedir}" id="additional.jar.files">
+			<include name="LICENSE.txt" />
+			<include name="README.md" />
+		</fileset>
+
+	</target>
+
+	<target name="build-jar" depends="test,-define-additional-jar-files">
 		<mkdir dir="${artifacts.dir}"/>
 		<jar destfile="${artifacts.dir}/xml.entity-${version}-jar.jar">
-			<fileset dir="${src.bin.dir}">
-			</fileset>
+			<fileset dir="${src.bin.dir}"/>
+			<fileset refid="additional.jar.files"/>
 			<manifest>
 				<attribute name="version" value="${version}"/>
 			</manifest>
 		</jar>
 	</target>
 
-	<target name="build-javadoc-jar" depends="retrieve">
+	<target name="build-javadoc-jar" depends="retrieve,-define-additional-jar-files">
 		<mkdir dir="${artifacts.dir}"/>
 		<property name="javadoc.dir" value="${tmp.dir}/javadoc"/>
 		<mkdir dir="${javadoc.dir}"/>
@@ -85,17 +93,19 @@
 		<jar destfile="${artifacts.dir}/xml.entity-${version}-javadoc.jar">
 			<fileset dir="${javadoc.dir}">
 			</fileset>
+			<fileset refid="additional.jar.files"/>
 			<manifest>
 				<attribute name="version" value="${version}"/>
 			</manifest>
 		</jar>
 	</target>
 
-	<target name="build-source-jar">
+	<target name="build-source-jar" depends="-define-additional-jar-files">
 		<mkdir dir="${artifacts.dir}" />
 		<jar destfile="${artifacts.dir}/xml.entity-${version}-source.jar">
 			<fileset dir="${src.dir}">
 			</fileset>
+			<fileset refid="additional.jar.files"/>
 			<manifest>
 				<attribute name="version" value="${version}" />
 			</manifest>

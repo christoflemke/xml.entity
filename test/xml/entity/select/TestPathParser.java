@@ -115,8 +115,9 @@ public class TestPathParser
 		assertThat(segment.toString(), startsWith("/Bar"));
         final Element matching = factory.createNode("Bar").value("baz");
         final Element mismatch = factory.createNode("Bar").value("asdasd");
-        assertThat(segment.apply(matching.immutableCopy()), is(true));
-        assertThat(segment.apply(mismatch.immutableCopy()), is(false));
+
+        assertThat(segment, matches(matching.immutableCopy()));
+        assertThat(segment, not(matches(mismatch.immutableCopy())));
 	}
 
 	@Test public void testMatchTextAndAttr()
@@ -127,6 +128,7 @@ public class TestPathParser
 		assertThat(iterator.next().toString(), is("/Foo"));
 		final PathExpr segment = iterator.next();
 		assertThat(segment.toString(), startsWith("/Bar"));
+
         final Element matching = factory.createNode("Bar");
         matching.attribute("name").value("moin");
         matching.value("baz");
@@ -136,9 +138,10 @@ public class TestPathParser
         final Element mismatchattr = factory.createNode("Bar");
         mismatchattr.attribute("name").value("moin1");
         mismatchattr.value("baz");
-        assertThat(segment.apply(matching.immutableCopy()), is(true));
-        assertThat(segment.apply(mismatchtext.immutableCopy()), is(false));
-        assertThat(segment.apply(mismatchattr.immutableCopy()), is(false));
+
+        assertThat(segment, matches(matching.immutableCopy()));
+        assertThat(segment, not(matches(mismatchtext.immutableCopy())));
+        assertThat(segment, not(matches(mismatchattr.immutableCopy())));
 	}
 
 	@Test public void testMatchTextAndAttr2()
@@ -158,17 +161,20 @@ public class TestPathParser
         final Element mismatchattr = factory.createNode("Bar");
         mismatchattr.attribute("name").value("moin1");
         mismatchattr.value("baz");
-        assertThat(segment.apply(matching.immutableCopy()), is(true));
-        assertThat(segment.apply(mismatchtext.immutableCopy()), is(false));
-        assertThat(segment.apply(mismatchattr.immutableCopy()), is(false));
+
+        assertThat(segment, matches(matching.immutableCopy()));
+        assertThat(segment, not(matches(mismatchtext.immutableCopy())));
+        assertThat(segment, not(matches(mismatchattr.immutableCopy())));
 	}
 
 	@Test public void testMark()
 	{
 		final Path path = parser.parse("/Foo/!Bar/Baz");
 		final UnmodifiableIterator<PathExpr> iterator = path.segments.iterator();
+
 		assertThat(iterator.next().isMarked(), is(false));
 		final PathExpr marked = iterator.next();
+
 		assertThat(marked.isMarked(), is(true));
 		assertThat(marked.toString(), is("/Bar"));
 		assertThat(iterator.next().isMarked(), is(false));

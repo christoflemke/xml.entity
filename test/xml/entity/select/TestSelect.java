@@ -64,7 +64,7 @@ public class TestSelect
 	public void testSelectText() throws SAXException, IOException
 	{
         final ImmutableElement element = this.parser.parse(CommonData.simpleXml.getInput());
-        final ImmutableElement selected = element.select().from("/Foo/Bar").one();
+        final ImmutableElement selected = element.select().from("/Foo/Bar#text=baz").one();
 		assertThat(selected, valueIs("baz"));
 	}
 

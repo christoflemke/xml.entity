@@ -19,12 +19,14 @@ import java.util.NoSuchElementException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 
 import xml.entity.select.dsl.DSL;
 import xml.entity.select.dsl.DSL.Join;
 
 import com.google.common.collect.ImmutableList;
 
+@Immutable
 public interface ImmutableElement
 {
     /**

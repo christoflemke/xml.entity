@@ -24,10 +24,27 @@ import xml.entity.immutableelement.ImmutableElement;
 
 public interface Element
 {
+    /**
+     * The element name.
+     * 
+     * @return The element name
+     */
     @Nonnull
     String name();
+
+    /**
+     * The element value.
+     * 
+     * @return The element value.
+     */
     @Nullable
     String value();
+
+    /**
+     * The children of this node. Creates the node if its missing.
+     * 
+     * @return
+     */
     @Nonnull
     Collection<Element> children();
     @Nonnull
@@ -43,6 +60,13 @@ public interface Element
      */
     @Nonnull
     Element copy();
+
+    /**
+     * Converts this element and its children to a tree of
+     * {@link ImmutableElement}s.
+     * 
+     * @return An immutable deep copy of this element.
+     */
     ImmutableElement immutableCopy();
 
     /**
@@ -52,11 +76,32 @@ public interface Element
      */
     @Nonnull
     Element create();
+
+    /**
+     * Add or access an attribute on this node. Creates the node if its missing.
+     * 
+     * @param name
+     *            The name of the attribute node
+     * @return The attribute node.
+     */
     @Nonnull
-    Element attribute(String string);
+    Element attribute(String name);
+
+    /**
+     * Set the value of the element. Creates the element if its missing
+     * 
+     * @param value
+     *            The text content of this element
+     * @return The node itself
+     */
     @Nonnull
     Element value(String value);
 
+    /**
+     * Does this node exist.
+     * 
+     * @return true if the node exists.
+     */
     boolean isMissing();
 
 }

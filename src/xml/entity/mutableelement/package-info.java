@@ -17,5 +17,23 @@
 /**
  * The classes defined in this package can be used to construct node trees
  * from scratch.
+ * 
+ * 
+ * Example:
+ * <pre>
+ * {@code
+ *  final Element root = factory.createNode("Foo");
+ *
+ *  root.attribute("name").value("a");
+ *  root.value("abc");
+ * }
+ * </pre>
+ * Creates:
+ * <pre>
+ * {@code
+ *  <Foo name="a">abc</Foo>
+ * }
+ * </pre>
+ * 
  */
 package xml.entity.mutableelement;

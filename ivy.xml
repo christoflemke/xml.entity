@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+<ivy-module version="2.0" 
+	xmlns:m="http://ant.apache.org/ivy/maven"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+	
 	<info organisation="lemke.christof" module="xml.entity" status="null">
 		<license name="apache2" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
 	</info>
@@ -8,10 +12,18 @@
 		<conf name="master"/>
 		<conf name="default" extends="master"/>
 		<conf name="test" visibility="private"/>
+		<conf name="sources" visibility="public"
+			description="this configuration contains the source artifact of this module, if any." />
+		<conf name="javadoc" visibility="public"
+			description="this configuration contains the javadoc artifact of this module, if any." />
 	</configurations>
 
 	<publications>
 		<artifact conf="master" type="jar" ext="jar"/>
+		<artifact type="source" ext="jar" conf="sources"
+			m:classifier="sources" />
+		<artifact type="javadoc" ext="jar" conf="javadoc"
+			m:classifier="javadoc" />
 	</publications>
 
 	<dependencies defaultconf="*->default">

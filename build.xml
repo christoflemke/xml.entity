@@ -49,47 +49,67 @@
 
 	<path id="junit.test.path.id">
 		<path path="${src.bin.dir}"/>
-					<path path="${test.bin.dir}"/>
-					<fileset dir="${lib.dir}">
-						<include name="**/*.jar"/>
-					</fileset>
+		<path path="${test.bin.dir}"/>
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
 	</path>
-	
+
 	<target name="test" depends="compile">
 		<junit>
-			<classpath refid="junit.test.path.id"></classpath>
+			<classpath refid="junit.test.path.id">
+			</classpath>
 			<formatter type="xml" />
-			<test name="xml.entity.AllTests" outfile="${tmp.dir}/results"></test>
+			<test name="xml.entity.AllTests" outfile="${tmp.dir}/results">
+			</test>
 		</junit>
 	</target>
-	
+
 	<target name="build-jar" depends="test">
 		<mkdir dir="${artifacts.dir}"/>
 		<jar destfile="${artifacts.dir}/xml.entity-${version}-jar.jar">
-			<fileset dir="${src.bin.dir}"></fileset>
+			<fileset dir="${src.bin.dir}">
+			</fileset>
 			<manifest>
 				<attribute name="version" value="${version}"/>
 			</manifest>
 		</jar>
 	</target>
 
-	<target name="build-javadoc" depends="retrieve">
-		<path></path>
+	<target name="build-javadoc-jar" depends="retrieve">
+		<mkdir dir="${artifacts.dir}"/>
 		<property name="javadoc.dir" value="${tmp.dir}/javadoc"/>
 		<mkdir dir="${javadoc.dir}"/>
-		<javadoc sourcepath="${src.dir}" destdir="${javadoc.dir}" classpathref="core.lib.path.id">
+		<javadoc sourcepath="${src.dir}" destdir="${javadoc.dir}" classpathref="core.lib.path.id"/>
 
-		</javadoc>
+		<jar destfile="${artifacts.dir}/xml.entity-${version}-javadoc.jar">
+			<fileset dir="${javadoc.dir}">
+			</fileset>
+			<manifest>
+				<attribute name="version" value="${version}"/>
+			</manifest>
+		</jar>
 	</target>
-	
-	<target name="build" depends="build-jar,build-javadoc"/>
-	
-	<target name="publish" depends="build-jar">
+
+	<target name="build-source-jar">
+		<mkdir dir="${artifacts.dir}" />
+		<jar destfile="${artifacts.dir}/xml.entity-${version}-source.jar">
+			<fileset dir="${src.dir}">
+			</fileset>
+			<manifest>
+				<attribute name="version" value="${version}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="build" depends="build-jar,build-javadoc-jar,build-source-jar" />
+
+	<target name="publish" depends="build">
 		<ivy:publish 
 			resolver="local"
 			pubrevision="${version}"
 			overwrite="true"
 			artifactspattern="${artifacts.dir}/[module]-[revision]-[type].[ext]"
-		/>	
+		/>
 	</target>
 </project>

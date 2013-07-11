@@ -73,7 +73,16 @@
 		</jar>
 	</target>
 
-	<target name="build" depends="build-jar"/>
+	<target name="build-javadoc" depends="retrieve">
+		<path></path>
+		<property name="javadoc.dir" value="${tmp.dir}/javadoc"/>
+		<mkdir dir="${javadoc.dir}"/>
+		<javadoc sourcepath="${src.dir}" destdir="${javadoc.dir}" classpathref="core.lib.path.id">
+
+		</javadoc>
+	</target>
+	
+	<target name="build" depends="build-jar,build-javadoc"/>
 	
 	<target name="publish" depends="build-jar">
 		<ivy:publish 

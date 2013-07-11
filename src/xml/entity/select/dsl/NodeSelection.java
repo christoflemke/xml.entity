@@ -21,7 +21,6 @@ import javax.annotation.Nonnull;
 
 import xml.entity.immutableelement.ImmutableElement;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 
@@ -41,6 +40,4 @@ public interface NodeSelection
     ImmutableList<ImmutableElement> all();
     @Nonnull
     FluentIterable<ImmutableElement> iterable();
-    @Nonnull
-    NodeSelection where(Predicate<ImmutableElement> expr);
 }

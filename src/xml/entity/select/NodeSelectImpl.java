@@ -9,7 +9,6 @@ import xml.entity.select.PathParser.Path;
 import xml.entity.select.dsl.NodeSelection;
 
 import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.FluentIterable;
@@ -62,13 +61,6 @@ final class NodeSelectImpl implements NodeSelection
         this.element = element;
         this.path = path;
         this.expr = expr;
-    }
-    @Override
-    @Nonnull
-    public NodeSelection where(final Predicate<ImmutableElement> expr)
-    {
-        Predicate<ImmutableElement> and = Predicates.and(expr, this.expr);
-        return new NodeSelectImpl(this.defaultSelector, this.element, this.path, and);
     }
     @Override
     @Nonnull

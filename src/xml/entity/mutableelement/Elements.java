@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 import xml.entity.immutableelement.ImmutableElement;
 
 import com.google.common.base.Function;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -52,15 +53,14 @@ public abstract class Elements
     /**
      * Match elements by value
      */
-	public static Predicate<Element> byValue(@Nonnull final String value)
+    public static Predicate<Element> byValue(@Nullable final String value)
 	{
-		Preconditions.checkNotNull(value);
 		return new Predicate<Element>() {
 
 			@Override
             public boolean apply(@Nonnull final Element input)
 			{
-				return value.equals(input.value());
+                return Objects.equal(value, input.value());
 			}
 
 			@Override public String toString()

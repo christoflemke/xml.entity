@@ -15,6 +15,8 @@
  */
 package xml.entity.mutableentity;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static xml.entity.mutableelement.Elements.byName;
 import static xml.entity.mutableelement.Elements.byValue;
@@ -29,16 +31,19 @@ import org.junit.Test;
 import xml.entity.mutableelement.Element;
 import xml.entity.mutableelement.ElementFactory;
 
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 public class TestElements
 {
 	private List<Element> elements;
+    private ElementFactory factory;
 	@Before public void setup()
 	{
 		elements = Lists.newArrayList();
-        final ElementFactory factory = ElementFactory.create();
+        factory = ElementFactory.create();
         elements.add(factory.createNode("Foo").value("a"));
         elements.add(factory.createNode("Foo").value("b"));
         elements.add(factory.createNode("Bar").value("c"));
@@ -63,4 +68,16 @@ public class TestElements
 		element = Iterables.find(elements, byValue("c"));
 		assertThat(element, nameIs("Bar"));
 	}
+
+    @Test
+    public void testFilterNullValue()
+    {
+        final Element root = factory.createNode("foo");
+        root.child("bar").value("baz");
+        root.child("moin").create();
+
+        final ImmutableList<Element> all = FluentIterable.from(root.children()).filter(byValue(null)).toImmutableList();
+        assertThat(all.size(), equalTo(1));
+        assertThat(Iterables.getOnlyElement(all).value(), nullValue());
+    }
 }

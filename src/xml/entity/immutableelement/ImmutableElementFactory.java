@@ -15,6 +15,8 @@
  */
 package xml.entity.immutableelement;
 
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
 import javax.inject.Inject;
 
 import xml.entity.select.DefaultSelector;
@@ -23,12 +25,13 @@ import xml.entity.select.Selector;
 
 import com.google.common.collect.ImmutableList;
 
+@Immutable
 public class ImmutableElementFactory
 {
     private final Selector selector;
 
     @Inject
-    public ImmutableElementFactory(final Selector selector)
+    public ImmutableElementFactory(@Nonnull final Selector selector)
     {
         this.selector = selector;
     }
@@ -38,27 +41,68 @@ public class ImmutableElementFactory
         this.selector = new DefaultSelector(PathParser.create(), this);
     }
 
+    /**
+     * Create an instance of the default implementation
+     * 
+     * @return A new factory
+     */
     public static ImmutableElementFactory create()
 	{
         return new ImmutableElementFactory();
     }
 
-    public ImmutableElement createNode(final String name, final ImmutableList<ImmutableElement> children)
+    /**
+     * Create an internal node.
+     * 
+     * @param name
+     *            The element name.
+     * @param children
+     *            The children of the new node.
+     * @return A node
+     */
+    public ImmutableElement createNode(
+            @Nonnull final String name,
+            @Nonnull final ImmutableList<ImmutableElement> children)
 	{
         return new InternalElement(name, children, this.selector);
 	}
 
-	public ImmutableElement createAttr(final String name, final String value)
+    /**
+     * Create an attribute node
+     * 
+     * @param name
+     *            The name of the attribute
+     * @param value
+     *            The value of the attribute
+     * @return A new attribute node
+     */
+    public ImmutableElement createAttr(
+            @Nonnull final String name,
+            @Nonnull final String value)
 	{
         return new Attribute(name, value, this.selector);
 	}
 
-	public ImmutableElement createText(final String value)
+    /**
+     * Create a text node.
+     * 
+     * @param value
+     *            The text content of this node
+     * @return A text node
+     */
+    public ImmutableElement createText(@Nonnull final String value)
 	{
         return new Text(value, this.selector);
 	}
 
-    public ImmutableElement createLeaf(final String name)
+    /**
+     * Create a node without children
+     * 
+     * @param name
+     *            The element name
+     * @return A node
+     */
+    public ImmutableElement createLeaf(@Nonnull final String name)
     {
         final ImmutableList<ImmutableElement> of = ImmutableList.of();
         return new InternalElement(name, of, this.selector);

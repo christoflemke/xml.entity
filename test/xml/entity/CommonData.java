@@ -49,6 +49,10 @@ public class CommonData
 			CharStreams.newReaderSupplier("<?xml version=\"1.0\" encoding=\"UTF-8\"?><Foo/>");
 	public static final InputSupplier<StringReader> withComments =
 			CharStreams.newReaderSupplier("<Foo><!-- Comment--><Bar/><!-- More Comments--></Foo>");
+    public static final InputSupplier<StringReader> withCDATASimple =
+            CharStreams.newReaderSupplier("<Foo><![CDATA[foo]]></Foo>");
+    public static final InputSupplier<StringReader> withCDATASpecialChars =
+            CharStreams.newReaderSupplier("<Foo><![CDATA[foo \n &\"'<>]]></Foo>");
 
 	/*
 	 * XmlElements

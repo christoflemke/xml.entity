@@ -140,4 +140,18 @@ public class TestParser
         assertThat(element, hasAttr("name").withValue("<a/>\"&'"));
         assertThat(element.children().size(), equalTo(1));
     }
+
+    @Test
+    public void parseSimpleCDATA() throws Exception
+    {
+        final ImmutableElement element = this.parser.parse(CommonData.withCDATASimple.getInput());
+        assertThat(element, valueIs("foo"));
+    }
+
+    @Test
+    public void parseSimpleCDATASpecial() throws Exception
+    {
+        final ImmutableElement element = this.parser.parse(CommonData.withCDATASpecialChars.getInput());
+        assertThat(element, valueIs("foo \n &\"'<>"));
+    }
 }

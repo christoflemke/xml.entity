@@ -240,14 +240,6 @@ public class TestMutableEntity
     }
 
     @Test
-    public void childrenByNameOnAttr()
-    {
-        final Element node = factory.createAttr("asd", "asds");
-        thrown.expect(IllegalStateException.class);
-        node.children("name");
-    }
-
-    @Test
     public void childOnAttr()
     {
         final Element node = factory.createAttr("asd", "asds");
@@ -277,14 +269,6 @@ public class TestMutableEntity
         final Element node = factory.createText("dasdas");
         thrown.expect(IllegalStateException.class);
         node.child("dsads");
-    }
-
-    @Test
-    public void childrenByNameOnText()
-    {
-        final Element node = factory.createText("dasdas");
-        thrown.expect(IllegalStateException.class);
-        node.children("dasdas");
     }
 
     @Test

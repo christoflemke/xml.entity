@@ -62,13 +62,6 @@ abstract class AbstractElement implements Element
 
     @Override
     @Nonnull
-    public Collection<Element> children(final String name)
-    {
-        throw new IllegalStateException(name + " " + this + " can not have children");
-    }
-
-    @Override
-    @Nonnull
     public Element child(final String name)
     {
         throw new IllegalStateException(name + " " + this + " can not have children");

@@ -70,13 +70,6 @@ class InternalElement extends AbstractElement implements Element
         return this.children;
     }
 
-    @Override
-    @Nonnull
-    public Collection<Element> children(final String name)
-    {
-        return Collections2.filter(children(), Elements.byName(name));
-    }
-
     @Override @Nonnull public Element copy()
     {
         final InternalElement copy = new InternalElement(name(), this.factory);

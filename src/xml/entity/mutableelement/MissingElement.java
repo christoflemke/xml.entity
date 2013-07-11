@@ -61,12 +61,7 @@ class MissingElement implements Element
     {
         return create().children();
     }
-    @Override
-    @Nonnull
-    public Collection<Element> children(final String name)
-    {
-        return create().children(name);
-    }
+
     @Override
     @Nonnull
     public Element child(final String name)

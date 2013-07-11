@@ -47,8 +47,7 @@ public interface Element
      */
     @Nonnull
     Collection<Element> children();
-    @Nonnull
-    Collection<Element> children(String name);
+
     /**
      * This will always create a missing child
      */

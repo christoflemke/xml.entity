@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /**
- * The classes defined in this package can be used to construct node trees
- * from scratch.
+ * This package contains the XML Serializer
+ *
  */
-package xml.entity.mutableelement;
+package xml.entity.serilalize;

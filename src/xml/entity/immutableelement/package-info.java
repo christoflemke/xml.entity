@@ -15,7 +15,7 @@
  */
 
 /**
- * @author dodger
- *
+ * This package is the core of this library.
+ * It defines how XMl trees are represented
  */
 package xml.entity.immutableelement;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xml.entity.parser;
+package xml.entity.serialize;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -35,10 +35,12 @@ import org.xml.sax.SAXException;
 
 import xml.entity.CommonData;
 import xml.entity.immutableelement.ImmutableElement;
+import xml.entity.serilalize.DefaultServiceContext;
+import xml.entity.serilalize.Parser;
 
 public class TestParser
 {
-    private final Parser parser = NullServiceContext.create().parser();
+    private final Parser parser = DefaultServiceContext.create().parser();
 
 	@Test
 	public void testParseSimpleXml() throws SAXException, IOException

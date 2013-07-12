@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import xml.entity.immutableelement.ImmutableElement;
 import xml.entity.select.PathParser.Path;
 import xml.entity.select.dsl.NodeSelection;
+import xml.entity.visitor.SelectionVisitor;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -19,7 +20,7 @@ import com.google.common.collect.Iterables;
 
 final class NodeSelectImpl implements NodeSelection
 {
-    private final class SelectVisitor implements ISelectionVisitor, Supplier<ImmutableList<ImmutableElement>>
+    private final class SelectVisitor implements SelectionVisitor, Supplier<ImmutableList<ImmutableElement>>
     {
         private final Builder<ImmutableElement> builder;
         private SelectVisitor()

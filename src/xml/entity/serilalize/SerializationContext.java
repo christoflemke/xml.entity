@@ -13,30 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xml.entity.visitor;
+package xml.entity.serilalize;
 
-import xml.entity.immutableelement.ImmutableElement;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
+import java.nio.charset.Charset;
 
-/**
- * Empty default impl
- */
-public abstract class BaseVisitor implements ElementVisitor
+import javax.xml.stream.XMLStreamException;
+
+public interface SerializationContext
 {
 
-    @Override
-    public void onElementStart(final ImmutableElement root)
-	{}
+    public void toWriter(Writer writer) throws XMLStreamException;
 
-    @Override
-    public void onElementStop(final ImmutableElement child)
-	{}
+    public void toStream(OutputStream stream, Charset charset) throws XMLStreamException, IOException;
 
-    @Override
-    public void onAttribute(final ImmutableElement attribute)
-	{}
-
-    @Override
-    public void onText(final ImmutableElement textElement)
-	{}
+    public String toString();
 
 }

@@ -24,7 +24,38 @@ import xml.entity.immutableelement.ImmutableElement;
 
 public class DFSTraversal
 {
-    public <E extends Exception> void visit(final ImmutableElement element, final ElementVisitor<E> visitor) throws E
+    public void visit(final ImmutableElement element, final SelectionVisitor selectionVisitor)
+    {
+        visit(element, new ElementVisitor() {
+
+            @Override
+            public void onElementStart(final ImmutableElement root)
+            {
+                selectionVisitor.enterChild(root);
+                selectionVisitor.match(root);
+            }
+
+            @Override
+            public void onElementStop(final ImmutableElement child)
+            {
+                selectionVisitor.leaveChild(child);
+            }
+
+            @Override
+            public void onAttribute(final ImmutableElement attribute)
+            {
+                selectionVisitor.match(attribute);
+            }
+
+            @Override
+            public void onText(final ImmutableElement textElement)
+            {
+                selectionVisitor.match(textElement);
+            }
+        });
+    }
+
+    public <E extends Exception> void visit(final ImmutableElement element, final ElementVisitor visitor)
 	{
 		visitor.onElementStart(element);
         for(final ImmutableElement child : filter(element.children(), isAttribute()))

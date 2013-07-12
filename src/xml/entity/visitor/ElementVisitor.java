@@ -17,10 +17,10 @@ package xml.entity.visitor;
 
 import xml.entity.immutableelement.ImmutableElement;
 
-public interface ElementVisitor<E extends Exception>
+public interface ElementVisitor
 {
-    void onElementStart(ImmutableElement root) throws E;
-    void onElementStop(ImmutableElement child) throws E;
-    void onAttribute(ImmutableElement attribute) throws E;
-    void onText(ImmutableElement textElement) throws E;
+    void onElementStart(ImmutableElement root);
+    void onElementStop(ImmutableElement child);
+    void onAttribute(ImmutableElement attribute);
+    void onText(ImmutableElement textElement);
 }

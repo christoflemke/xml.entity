@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * This package contains the XML parser.
- */
-package xml.entity.parser;
+package xml.entity.serilalize.transform;
+
+import xml.entity.immutableelement.ImmutableElement;
+
+import com.google.common.base.Function;
+
+public interface ElementTransformation extends Function<ImmutableElement, ImmutableElement>
+{
+
+}

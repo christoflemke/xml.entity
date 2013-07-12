@@ -21,19 +21,14 @@ import static xml.entity.immutableelement.ImmutableElements.byName;
 import static xml.entity.immutableelement.ImmutableElements.isText;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import javax.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import xml.entity.immutableelement.ImmutableElement;
 import xml.entity.immutableelement.ImmutableElementFactory;
-import xml.entity.immutableelement.ImmutableElements;
 import xml.entity.select.PathParser.Path;
 import xml.entity.select.PathParser.PathExpr;
 import xml.entity.select.dsl.DSL;
@@ -47,6 +42,8 @@ import xml.entity.select.dsl.DSL.WithWhere;
 import xml.entity.select.dsl.DSLException;
 import xml.entity.select.dsl.ExpectedMatches;
 import xml.entity.select.dsl.NodeSelection;
+import xml.entity.visitor.SelectionVisitor;
+import xml.entity.visitor.ReplaceVisitor;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
@@ -54,15 +51,12 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.common.collect.Sets.SetView;
 
 @Immutable
 public class DefaultSelector implements Selector
 {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final ImmutableElementFactory factory;
+    //private final Logger logger = LoggerFactory.getLogger(getClass());
+    final ImmutableElementFactory factory;
     private final PathParser pathParser;
 
     @Inject
@@ -80,91 +74,6 @@ public class DefaultSelector implements Selector
         return new DefaultSelector(
                 pathParser,
                 factory);
-    }
-
-    private abstract class ReplaceVisitor implements ISelectionVisitor
-    {
-        private final Map<ImmutableElement, ImmutableElement> replace = Maps.newHashMap();
-        private ImmutableElement root;
-
-        public ReplaceVisitor()
-        {
-            super();
-            this.root = null;
-        }
-
-        @Override
-        public final void mismatch(final ImmutableElement element)
-        {}
-
-        @Override
-        public final void enterChild(final ImmutableElement element)
-        {}
-
-        @Override
-        public final void leaveChild(final ImmutableElement element)
-        {
-            if(!ImmutableElements.isInternal().apply(element))
-            {
-                return;
-            }
-            // test if replacements for children exist
-            final SetView<ImmutableElement> intersection = Sets.intersection(Sets.newHashSet(element.children()), this.replace.keySet());
-            if(intersection.isEmpty())
-            {
-                // always set root to the last node left
-                if(this.replace.containsKey(element))
-                {
-                    // if the root node has been replaced
-                    this.root = this.replace.get(element);
-                    DefaultSelector.this.logger.debug("replace root: {}, with: {}", element, this.root);
-                }
-                else
-                {
-                    // if the node is unmodified
-                    this.root = element;
-                }
-            }
-            else
-            {
-                // replace children
-                final Builder<ImmutableElement> builder = ImmutableList.builder();
-                for(final ImmutableElement e : element.children())
-                {
-                    if(this.replace.containsKey(e))
-                    {
-                        final ImmutableElement repacement = this.replace.remove(e);
-                        DefaultSelector.this.logger.debug("replace: {}, with: {}", e, repacement);
-                        if(repacement == null)
-                        {
-                            // skip
-                        }
-                        else
-                        {
-                            builder.add(repacement);
-                        }
-                    }
-                    else
-                    {
-                        builder.add(e);
-                    }
-                }
-                final ImmutableElement internalElement = DefaultSelector.this.factory.createNode(element.name(), builder.build());
-                replace(element, internalElement);
-                this.root = internalElement;
-            }
-        }
-
-        protected void replace(final ImmutableElement old, final ImmutableElement newElement)
-        {
-            DefaultSelector.this.logger.debug("add replacement: {}, with: {}", old, newElement);
-            this.replace.put(old, newElement);
-        }
-
-        public ImmutableElement element()
-        {
-            return this.root;
-        }
     }
 
     private static interface UpdateOperation extends Function<ImmutableElement, ImmutableElement>
@@ -304,7 +213,7 @@ public class DefaultSelector implements Selector
         @Override
         public final T where(final Predicate<ImmutableElement> expr)
         {
-            Predicate<ImmutableElement> and = Predicates.and(getExpr(), expr);
+            final Predicate<ImmutableElement> and = Predicates.and(getExpr(), expr);
             return create(this.root, this.path, and, this.expectedMatches);
         }
 
@@ -315,6 +224,11 @@ public class DefaultSelector implements Selector
         private final class Visitor extends ReplaceVisitor
         {
             private int numMatches = 0;
+
+            public Visitor()
+            {
+                super(factory);
+            }
 
             @Override
             public void match(final ImmutableElement element)
@@ -478,7 +392,7 @@ public class DefaultSelector implements Selector
         }
     }
 
-    void select(final Path path, final ImmutableElement current, final ISelectionVisitor visitor)
+    void select(final Path path, final ImmutableElement current, final SelectionVisitor visitor)
     {
         visitor.enterChild(current);
         final PathExpr head = path.head();

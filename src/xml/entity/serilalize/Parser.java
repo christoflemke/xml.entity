@@ -13,30 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xml.entity.visitor;
+package xml.entity.serilalize;
+
+import java.io.IOException;
+import java.io.Reader;
+
+import org.xml.sax.SAXException;
 
 import xml.entity.immutableelement.ImmutableElement;
 
-/**
- * Empty default impl
- */
-public abstract class BaseVisitor implements ElementVisitor
+public interface Parser
 {
 
-    @Override
-    public void onElementStart(final ImmutableElement root)
-	{}
+    public ImmutableElement parse(Reader reader) throws SAXException, IOException;
 
-    @Override
-    public void onElementStop(final ImmutableElement child)
-	{}
-
-    @Override
-    public void onAttribute(final ImmutableElement attribute)
-	{}
-
-    @Override
-    public void onText(final ImmutableElement textElement)
-	{}
+    public ImmutableElement parse(String string) throws SAXException;
 
 }

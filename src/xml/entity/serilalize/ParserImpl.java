@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xml.entity.parser;
+package xml.entity.serilalize;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -42,25 +42,23 @@ import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Lists;
 
 
-public class Parser
+class ParserImpl implements Parser
 {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
-    private final ServiceContext serviceContext;
     private final ImmutableElementFactory factory;
 
     @Inject
-    public Parser(final ServiceContext serviceContext, final ImmutableElementFactory factory) throws SAXException, ParserConfigurationException
+    ParserImpl(final ImmutableElementFactory factory) throws SAXException, ParserConfigurationException
     {
-        this.serviceContext = serviceContext;
         this.factory = factory;
     }
 
-    public static Parser create(final ServiceContext serviceContext, final ImmutableElementFactory factory)
+    public static Parser create(final ImmutableElementFactory factory)
     {
         try
         {
-            return new Parser(serviceContext, factory);
+            return new ParserImpl(factory);
         }
         catch(final SAXException e)
         {
@@ -78,12 +76,10 @@ public class Parser
         private final ImmutableElementFactory factory;
         private final Deque<ImmutableList.Builder<ImmutableElement>> currentChildren = Lists.newLinkedList();
         private ImmutableElement root = null;
-        private final ServiceContext serviceContext;
         private StringBuilder cdata = null;
 
-        public ImmutableHandler(final ServiceContext serviceContext, final ImmutableElementFactory factory)
+        public ImmutableHandler(final ImmutableElementFactory factory)
         {
-            this.serviceContext = serviceContext;
             this.factory = factory;
         }
         @Override
@@ -104,11 +100,6 @@ public class Parser
                 final String value = attributes.getValue(i);
                 final ImmutableElement element = this.factory.createAttr(name, value);
                 children.add(element);
-
-                if(name.startsWith("xmlns:"))
-                {
-                    this.serviceContext.addNamespaceDecl(name.replaceFirst("xmlns:", ""), value);
-                }
             }
         }
         @Override
@@ -188,14 +179,16 @@ public class Parser
 
 
 
+    @Override
     public ImmutableElement parse(final Reader reader) throws SAXException, IOException
 	{
-        final ImmutableHandler handler = new ImmutableHandler(this.serviceContext, this.factory);
+        final ImmutableHandler handler = new ImmutableHandler(this.factory);
         this.saxParser.parse(new InputSource(reader), handler);
         this.logger.debug("root: {}", handler.root());
         return handler.root();
 	}
 
+    @Override
     public ImmutableElement parse(final String string) throws SAXException
     {
         try

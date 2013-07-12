@@ -17,26 +17,10 @@ package xml.entity.visitor;
 
 import xml.entity.immutableelement.ImmutableElement;
 
-/**
- * Empty default impl
- */
-public abstract class BaseVisitor implements ElementVisitor
+public interface SelectionVisitor
 {
-
-    @Override
-    public void onElementStart(final ImmutableElement root)
-	{}
-
-    @Override
-    public void onElementStop(final ImmutableElement child)
-	{}
-
-    @Override
-    public void onAttribute(final ImmutableElement attribute)
-	{}
-
-    @Override
-    public void onText(final ImmutableElement textElement)
-	{}
-
+    void enterChild(ImmutableElement element);
+    void leaveChild(ImmutableElement element);
+    void match(ImmutableElement element);
+    void mismatch(ImmutableElement element);
 }

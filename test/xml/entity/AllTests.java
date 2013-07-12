@@ -22,30 +22,27 @@ import org.junit.runners.Suite.SuiteClasses;
 import xml.entity.immutableentity.TestImmutableElements;
 import xml.entity.mutableentity.TestElements;
 import xml.entity.mutableentity.TestMutableEntity;
-import xml.entity.parser.IdentityTest;
-import xml.entity.parser.TestParser;
-import xml.entity.parser.TestServiceContext;
 import xml.entity.select.TestDelete;
 import xml.entity.select.TestInsert;
 import xml.entity.select.TestPathParser;
 import xml.entity.select.TestSelect;
 import xml.entity.select.TestUpdate;
-import xml.entity.serialize.TestSerializer;
+import xml.entity.serialize.SerializationSuite;
+import xml.entity.serialize.transform.TransformSuite;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                TestPathParser.class,
-               TestParser.class,
                TestSelect.class,
                TestInsert.class,
                TestUpdate.class,
                TestDelete.class,
                TestMutableEntity.class,
                TestElements.class,
-               TestSerializer.class,
-               IdentityTest.class,
-               TestServiceContext.class,
-               TestImmutableElements.class
+               TestImmutableElements.class,
+               TransformSuite.class,
+               SerializationSuite.class
+
 })
 public class AllTests
 {

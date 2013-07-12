@@ -13,30 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xml.entity.parser;
+package xml.entity.serilalize;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import xml.entity.immutableelement.ImmutableElement;
 import xml.entity.immutableelement.ImmutableElementFactory;
 import xml.entity.mutableelement.ElementFactory;
-import xml.entity.serilalize.Serializer;
-
-import com.google.common.collect.ImmutableMap;
 
 public interface ServiceContext
 {
-    void addNamespaceDecl(@Nonnull String prefix, @Nonnull String url);
-    @Nullable
-    String getUrlForPrefix(@Nonnull String prefix);
-    @Nonnull
-    ImmutableMap<String, String> getNamespaceDecls(@Nonnull final ImmutableElement element);
-    void collectNamespaceDecls(@Nonnull final ImmutableElement element);
     @Nonnull
     Parser parser();
     @Nonnull
-    Serializer serializer();
+    Seriallizer serializer();
     @Nonnull
     ImmutableElementFactory factory();
     @Nonnull

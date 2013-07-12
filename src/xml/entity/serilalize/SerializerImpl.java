@@ -26,54 +26,45 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.util.Map.Entry;
 
 import javax.inject.Inject;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import xml.entity.immutableelement.ImmutableElement;
 import xml.entity.immutableelement.ImmutableElements;
-import xml.entity.parser.ServiceContext;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
-public class Serializer
+class SerializerImpl implements Seriallizer
 {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final ServiceContext context;
-
     @Inject
-    public Serializer(final ServiceContext context)
+    public SerializerImpl()
     {
-        this.context = context;
     }
 
-    public static Serializer create(final ServiceContext serviceContext)
+    public static Seriallizer create()
     {
-        return new Serializer(serviceContext);
+        return new SerializerImpl();
     }
 
+    @Override
     public SerializationContext serialize(final ImmutableElement element)
 	{
-        return new SerializationContext(element);
+        return new SerializationContextImpl(element);
 	}
 
-    public class SerializationContext
+    private class SerializationContextImpl implements SerializationContext
 	{
         private final ImmutableElement element;
 
-        public SerializationContext(final ImmutableElement element)
+        public SerializationContextImpl(final ImmutableElement element)
 		{
 			this.element = element;
 		}
 
+        @Override
         public void toWriter(final Writer writer) throws XMLStreamException
 		{
             final XMLStreamWriter streamWriter;
@@ -90,6 +81,7 @@ public class Serializer
             streamWriter.flush();
 		}
 
+        @Override
         public void toStream(final OutputStream stream, final Charset charset) throws XMLStreamException, IOException
         {
             final OutputStreamWriter writer = new OutputStreamWriter(stream, charset);
@@ -97,7 +89,8 @@ public class Serializer
             writer.flush();
         }
 
-		@Override public String toString()
+        @Override
+        public String toString()
 		{
 			final StringWriter writer = new StringWriter();
 			try
@@ -122,22 +115,8 @@ public class Serializer
             {
                 streamWriter.writeStartElement(current.name());
             }
-            if(current == this.element) // if root
-            {
-                final ImmutableMap<String, String> namespaceDecls = Serializer.this.context.getNamespaceDecls(current);
-                final ImmutableSet<Entry<String, String>> entrySet = namespaceDecls.entrySet();
-                for(final Entry<String, String> entry : entrySet)
-                {
-                    Serializer.this.logger.debug("write namespace: {}:{}", entry.getKey(), entry.getValue());
-                    streamWriter.writeNamespace(entry.getKey(), entry.getValue());
-                }
-            }
             for(final ImmutableElement attr : filter(current.children(), isAttribute()))
 			{
-                if(attr.name().startsWith("@xmlns"))
-                {
-                    continue;
-                }
                 streamWriter.writeAttribute(attr.name().replaceFirst("@", ""), attr.value());
 			}
             for(final ImmutableElement child : nonAttrChildren)

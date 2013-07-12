@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xml.entity.parser;
+package xml.entity.serilalize;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
-import xml.entity.immutableelement.ImmutableElement;
 import xml.entity.immutableelement.ImmutableElementFactory;
 import xml.entity.mutableelement.ElementFactory;
-import xml.entity.serilalize.Serializer;
 
-import com.google.common.collect.ImmutableMap;
-
-public class NullServiceContext implements ServiceContext
+public class DefaultServiceContext implements ServiceContext
 {
     private final Parser parser;
-    private final Serializer serializer;
+    private final Seriallizer serializer;
     private final ImmutableElementFactory factory;
     private final ElementFactory mutableFactory;
     @Inject
-    public NullServiceContext(
+    public DefaultServiceContext(
             final Parser parser,
-            final Serializer serializer,
+            final Seriallizer serializer,
             final ImmutableElementFactory factory,
             final ElementFactory mutableFactory)
     {
@@ -45,32 +41,18 @@ public class NullServiceContext implements ServiceContext
         this.mutableFactory = mutableFactory;
     }
 
-    private NullServiceContext()
+    private DefaultServiceContext()
     {
         this.factory = ImmutableElementFactory.create();
-        this.parser = Parser.create(this, this.factory);
-        this.serializer = Serializer.create(this);
+        this.parser = ParserImpl.create(this.factory);
+        this.serializer = SerializerImpl.create();
         this.mutableFactory = new ElementFactory(this.factory);
     }
 
     public static ServiceContext create()
     {
-        return new NullServiceContext();
+        return new DefaultServiceContext();
     }
-
-    @Override
-    public void addNamespaceDecl(@Nonnull final String prefix, @Nonnull final String url)
-    {}
-
-    @Override
-    public String getUrlForPrefix(@Nonnull final String prefix)
-    {
-        return null;
-    }
-
-    @Override
-    public void collectNamespaceDecls(final ImmutableElement element)
-    {}
 
     @Override
     public Parser parser()
@@ -79,7 +61,7 @@ public class NullServiceContext implements ServiceContext
     }
 
     @Override
-    public Serializer serializer()
+    public Seriallizer serializer()
     {
         return this.serializer;
     }
@@ -97,11 +79,4 @@ public class NullServiceContext implements ServiceContext
     {
         return this.mutableFactory;
     }
-
-    @Override
-    public ImmutableMap<String, String> getNamespaceDecls(final ImmutableElement element)
-    {
-        return ImmutableMap.of();
-    }
-
 }

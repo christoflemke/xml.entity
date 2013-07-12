@@ -13,30 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xml.entity.visitor;
+package xml.entity.serialize.transform;
 
-import xml.entity.immutableelement.ImmutableElement;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-/**
- * Empty default impl
- */
-public abstract class BaseVisitor implements ElementVisitor
+@RunWith(Suite.class)
+@SuiteClasses({
+               TestAddNamespaceTransformation.class,
+               TestRemoveNamespacePrefixes.class
+})
+public class TransformSuite
 {
-
-    @Override
-    public void onElementStart(final ImmutableElement root)
-	{}
-
-    @Override
-    public void onElementStop(final ImmutableElement child)
-	{}
-
-    @Override
-    public void onAttribute(final ImmutableElement attribute)
-	{}
-
-    @Override
-    public void onText(final ImmutableElement textElement)
-	{}
 
 }

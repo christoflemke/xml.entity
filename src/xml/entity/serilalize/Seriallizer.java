@@ -13,30 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xml.entity.visitor;
+package xml.entity.serilalize;
 
 import xml.entity.immutableelement.ImmutableElement;
 
-/**
- * Empty default impl
- */
-public abstract class BaseVisitor implements ElementVisitor
+public interface Seriallizer
 {
 
-    @Override
-    public void onElementStart(final ImmutableElement root)
-	{}
-
-    @Override
-    public void onElementStop(final ImmutableElement child)
-	{}
-
-    @Override
-    public void onAttribute(final ImmutableElement attribute)
-	{}
-
-    @Override
-    public void onText(final ImmutableElement textElement)
-	{}
+    public SerializationContext serialize(ImmutableElement element);
 
 }

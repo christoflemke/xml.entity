@@ -13,14 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xml.entity.select;
-
-import xml.entity.immutableelement.ImmutableElement;
-
-public interface ISelectionVisitor
-{
-    void enterChild(ImmutableElement element);
-    void leaveChild(ImmutableElement element);
-    void match(ImmutableElement element);
-    void mismatch(ImmutableElement element);
-}
+/**
+ *
+ */
+package xml.entity.serilalize.transform;

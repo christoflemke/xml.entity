@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 Christof Lemke
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package xml.entity;
 
 import static org.junit.Assert.assertTrue;
@@ -17,10 +32,10 @@ import org.slf4j.LoggerFactory;
 
 import xml.entity.immutableelement.ImmutableElement;
 import xml.entity.immutableelement.ImmutableElementFactory;
-import xml.entity.parser.NullServiceContext;
-import xml.entity.parser.Parser;
 import xml.entity.select.dsl.ExpectedMatches;
-import xml.entity.serilalize.Serializer;
+import xml.entity.serilalize.DefaultServiceContext;
+import xml.entity.serilalize.Parser;
+import xml.entity.serilalize.Seriallizer;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ContiguousSet;
@@ -37,8 +52,8 @@ public class ImmutableElementPerformanceTest
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public @Rule TemporaryFolder tmpFolder = new TemporaryFolder();
-    private final Serializer serializer = NullServiceContext.create().serializer();
-    private final Parser parser = NullServiceContext.create().parser();
+    private final Seriallizer serializer = DefaultServiceContext.create().serializer();
+    private final Parser parser = DefaultServiceContext.create().parser();
 
     private final class CharDomain extends DiscreteDomain<Character>
     {

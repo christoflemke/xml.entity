@@ -28,14 +28,14 @@ import org.junit.Test;
 
 import xml.entity.CommonData;
 import xml.entity.immutableelement.ImmutableElement;
-import xml.entity.parser.NullServiceContext;
-import xml.entity.serilalize.Serializer;
+import xml.entity.serilalize.DefaultServiceContext;
+import xml.entity.serilalize.Seriallizer;
 
 import com.google.common.base.Charsets;
 
 public class TestSerializer
 {
-    private final Serializer serializer = NullServiceContext.create().serializer();
+    private final Seriallizer serializer = DefaultServiceContext.create().serializer();
 
 	@Test public void testSingleElement()
 	{

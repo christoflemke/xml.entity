@@ -36,15 +36,15 @@ import org.xml.sax.SAXException;
 import xml.entity.CommonData;
 import xml.entity.immutableelement.ImmutableElement;
 import xml.entity.immutableelement.ImmutableMatchers;
-import xml.entity.parser.NullServiceContext;
-import xml.entity.parser.Parser;
+import xml.entity.serilalize.DefaultServiceContext;
+import xml.entity.serilalize.Parser;
 
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 
 public class TestSelect
 {
-    private final Parser parser = NullServiceContext.create().parser();
+    private final Parser parser = DefaultServiceContext.create().parser();
 	@Rule public ExpectedException expected = ExpectedException.none();
     @Rule public ErrorCollector errorCollector = new ErrorCollector();
 

@@ -24,13 +24,13 @@ import xml.entity.mutableelement.ElementFactory;
 public class DefaultServiceContext implements ServiceContext
 {
     private final Parser parser;
-    private final Seriallizer serializer;
+    private final Serializer serializer;
     private final ImmutableElementFactory factory;
     private final ElementFactory mutableFactory;
     @Inject
     public DefaultServiceContext(
             final Parser parser,
-            final Seriallizer serializer,
+            final Serializer serializer,
             final ImmutableElementFactory factory,
             final ElementFactory mutableFactory)
     {
@@ -61,7 +61,7 @@ public class DefaultServiceContext implements ServiceContext
     }
 
     @Override
-    public Seriallizer serializer()
+    public Serializer serializer()
     {
         return this.serializer;
     }

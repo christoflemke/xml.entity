@@ -25,7 +25,7 @@ public interface ServiceContext
     @Nonnull
     Parser parser();
     @Nonnull
-    Seriallizer serializer();
+    Serializer serializer();
     @Nonnull
     ImmutableElementFactory factory();
     @Nonnull

@@ -36,7 +36,7 @@ import xml.entity.CommonData;
 import xml.entity.immutableelement.ImmutableElement;
 import xml.entity.serilalize.DefaultServiceContext;
 import xml.entity.serilalize.Parser;
-import xml.entity.serilalize.Seriallizer;
+import xml.entity.serilalize.Serializer;
 
 import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
@@ -65,7 +65,7 @@ public class IdentityTest
 	private final InputSupplier<Reader> input;
 	private final boolean expectIdentity;
     private final Parser parser = DefaultServiceContext.create().parser();
-    private final Seriallizer serializer = DefaultServiceContext.create().serializer();
+    private final Serializer serializer = DefaultServiceContext.create().serializer();
 
 	public IdentityTest(final InputSupplier<Reader> input, final boolean expectIdentity)
 	{

@@ -44,9 +44,9 @@ public class XsiServiceContext implements ServiceContext
 
     @Override
     @Nonnull
-    public Seriallizer serializer()
+    public Serializer serializer()
     {
-        return new Seriallizer() {
+        return new Serializer() {
 
             @Override
             public SerializationContext serialize(final ImmutableElement element)

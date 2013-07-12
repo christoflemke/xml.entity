@@ -29,13 +29,13 @@ import org.junit.Test;
 import xml.entity.CommonData;
 import xml.entity.immutableelement.ImmutableElement;
 import xml.entity.serilalize.DefaultServiceContext;
-import xml.entity.serilalize.Seriallizer;
+import xml.entity.serilalize.Serializer;
 
 import com.google.common.base.Charsets;
 
 public class TestSerializer
 {
-    private final Seriallizer serializer = DefaultServiceContext.create().serializer();
+    private final Serializer serializer = DefaultServiceContext.create().serializer();
 
 	@Test public void testSingleElement()
 	{

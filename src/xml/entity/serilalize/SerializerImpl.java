@@ -37,14 +37,14 @@ import xml.entity.immutableelement.ImmutableElements;
 
 import com.google.common.collect.ImmutableList;
 
-class SerializerImpl implements Seriallizer
+class SerializerImpl implements Serializer
 {
     @Inject
     public SerializerImpl()
     {
     }
 
-    public static Seriallizer create()
+    public static Serializer create()
     {
         return new SerializerImpl();
     }

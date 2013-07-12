@@ -35,7 +35,7 @@ import xml.entity.immutableelement.ImmutableElementFactory;
 import xml.entity.select.dsl.ExpectedMatches;
 import xml.entity.serilalize.DefaultServiceContext;
 import xml.entity.serilalize.Parser;
-import xml.entity.serilalize.Seriallizer;
+import xml.entity.serilalize.Serializer;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ContiguousSet;
@@ -52,7 +52,7 @@ public class ImmutableElementPerformanceTest
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public @Rule TemporaryFolder tmpFolder = new TemporaryFolder();
-    private final Seriallizer serializer = DefaultServiceContext.create().serializer();
+    private final Serializer serializer = DefaultServiceContext.create().serializer();
     private final Parser parser = DefaultServiceContext.create().parser();
 
     private final class CharDomain extends DiscreteDomain<Character>

@@ -17,7 +17,7 @@ package xml.entity.serilalize;
 
 import xml.entity.immutableelement.ImmutableElement;
 
-public interface Seriallizer
+public interface Serializer
 {
 
     public SerializationContext serialize(ImmutableElement element);

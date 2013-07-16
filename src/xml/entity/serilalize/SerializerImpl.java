@@ -39,6 +39,7 @@ import com.google.common.collect.ImmutableList;
 
 class SerializerImpl implements Serializer
 {
+    private final XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newFactory();
     @Inject
     public SerializerImpl()
     {
@@ -70,7 +71,7 @@ class SerializerImpl implements Serializer
             final XMLStreamWriter streamWriter;
             try
             {
-                streamWriter = XMLOutputFactory.newFactory().createXMLStreamWriter(writer);
+                streamWriter = xmlOutputFactory.createXMLStreamWriter(writer);
             }
             catch(final Exception e)
             {

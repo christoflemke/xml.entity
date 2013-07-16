@@ -18,15 +18,13 @@ package xml.entity.serilalize;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.xml.sax.SAXException;
-
 import xml.entity.immutableelement.ImmutableElement;
 
 public interface Parser
 {
 
-    public ImmutableElement parse(Reader reader) throws SAXException, IOException;
+    public ImmutableElement parse(Reader reader) throws IOException;
 
-    public ImmutableElement parse(String string) throws SAXException;
+    public ImmutableElement parse(String string);
 
 }

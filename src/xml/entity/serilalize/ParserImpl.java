@@ -22,7 +22,6 @@ import java.util.Deque;
 
 import javax.inject.Inject;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.slf4j.Logger;
@@ -45,29 +44,18 @@ import com.google.common.collect.Lists;
 class ParserImpl implements Parser
 {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+    private final SAXParserFactory saxFactory = SAXParserFactory.newInstance();
     private final ImmutableElementFactory factory;
 
     @Inject
-    ParserImpl(final ImmutableElementFactory factory) throws SAXException, ParserConfigurationException
+    ParserImpl(final ImmutableElementFactory factory)
     {
         this.factory = factory;
     }
 
     public static Parser create(final ImmutableElementFactory factory)
     {
-        try
-        {
-            return new ParserImpl(factory);
-        }
-        catch(final SAXException e)
-        {
-            throw new RuntimeException("failed to create parser", e);
-        }
-        catch(final ParserConfigurationException e)
-        {
-            throw new RuntimeException("failed to create parser", e);
-        }
+        return new ParserImpl(factory);
     }
 
     private static class ImmutableHandler extends DefaultHandler implements ContentHandler
@@ -180,16 +168,27 @@ class ParserImpl implements Parser
 
 
     @Override
-    public ImmutableElement parse(final Reader reader) throws SAXException, IOException
+    public ImmutableElement parse(final Reader reader) throws IOException
 	{
         final ImmutableHandler handler = new ImmutableHandler(this.factory);
-        this.saxParser.parse(new InputSource(reader), handler);
+        try
+        {
+            this.saxFactory.newSAXParser().parse(new InputSource(reader), handler);
+        }
+        catch(final SAXException e)
+        {
+            throw new RuntimeException("failed to create parser", e);
+        }
+        catch(final ParserConfigurationException e)
+        {
+            throw new RuntimeException("failed to create parser", e);
+        }
         this.logger.debug("root: {}", handler.root());
         return handler.root();
 	}
 
     @Override
-    public ImmutableElement parse(final String string) throws SAXException
+    public ImmutableElement parse(final String string)
     {
         try
         {

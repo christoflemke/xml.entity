@@ -118,7 +118,7 @@ public class TestMutableEntity
     public void testAttrNode()
     {
         final Element root = factory.createNode("Bar");
-        final Element node = root.attribute("name").value("Hej");
+        root.attribute("name").value("Hej");
         collector.checkThat(root, nameIs("Bar"));
         collector.checkThat(root, valueIs(null));
         collector.checkThat(root, not(isLeaf()));

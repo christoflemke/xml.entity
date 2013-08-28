@@ -10,6 +10,8 @@
 	
 	<configurations>
 		<conf name="master"/>
+		<conf name="compile"/>
+		<conf name="runtime" extends="compile,master"/>
 		<conf name="default" extends="master"/>
 		<conf name="test" visibility="private"/>
 		<conf name="sources" visibility="public"

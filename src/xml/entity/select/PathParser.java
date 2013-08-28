@@ -87,9 +87,9 @@ public class PathParser
     private static Predicate<ImmutableElement> starExpr = new Predicate<ImmutableElement>() {
 
         @Override
-        public boolean apply(@Nullable final ImmutableElement elm)
+        public boolean apply(@Nullable final ImmutableElement paramT)
 		{
-            return !elm.name().startsWith("@") && !elm.name().startsWith("#");
+			return true;
 		}
 	
 		@Override
@@ -229,55 +229,55 @@ public class PathParser
 		}
 	}
 
-    private static final Pattern textSelectionPattern = Pattern.compile("[^#]*#text=([^#@]+).*");
+	private static final Pattern textSelectionPattern = Pattern.compile("[^#]*#text=([^#@]+).*");
     private static Iterable<Predicate<ImmutableElement>> extractTextExprs(final String subPath)
-    {
-        final Matcher matcher = textSelectionPattern.matcher(subPath);
+	{
+		final Matcher matcher = textSelectionPattern.matcher(subPath);
         final List<Predicate<ImmutableElement>> textMatchers = Lists.newLinkedList();
-        if(matcher.matches())
-        {
-            final String value = matcher.group(1);
-            textMatchers.add(new TextExpr(value));
-        }
-        else if(subPath.contains("#"))
-        {
-            throw new IllegalArgumentException("Unable to parse as text: " + subPath);
-        }
-        return textMatchers;
-    }
+		if(matcher.matches())
+		{
+			final String value = matcher.group(1);
+			textMatchers.add(new TextExpr(value));
+		}
+		else if(subPath.contains("#"))
+		{
+			throw new IllegalArgumentException("Unable to parse as text: " + subPath);
+		}
+		return textMatchers;
+	}
 
-    private static final Pattern attrWithValuePattern = Pattern.compile("[^@]*(@\\w+)=([^@#]+)(.*)");
-    private static final Pattern attrWithoutValuePattern = Pattern.compile("[^@]*(@\\w+)(.*)");
+	private static final Pattern attrWithValuePattern = Pattern.compile("[^@]*(@\\w+)=([^@#]+)(.*)");
+	private static final Pattern attrWithoutValuePattern = Pattern.compile("[^@]*(@\\w+)(.*)");
     private static Iterable<Predicate<ImmutableElement>> extractAttrExprs(String subPath)
-    {
+	{
         final List<Predicate<ImmutableElement>> exprs = Lists.newLinkedList();
-        while(subPath.contains("@"))
-        {
-            Matcher matcher = attrWithValuePattern.matcher(subPath);
-            if(matcher.matches())
-            {
-                final String attrName = matcher.group(1);
-                final String attValue = matcher.group(2);
-                exprs.add(new AttrExpr(attrName, attValue));
-                subPath = matcher.group(3);
-            }
-            else
-            {
-                matcher = attrWithoutValuePattern.matcher(subPath);
-                if(matcher.matches())
-                {
-                    final String name = matcher.group(1);
-                    subPath = matcher.group(2);
-                    exprs.add(new AttrExpr(name, null));
-                }
-                else
-                {
-                    throw new IllegalArgumentException("Unable to parse: " + subPath);
-                }
-            }
-        }
-        return exprs;
-    }
+		while(subPath.contains("@"))
+		{
+			Matcher matcher = attrWithValuePattern.matcher(subPath);
+			if(matcher.matches())
+			{
+				final String attrName = matcher.group(1);
+				final String attValue = matcher.group(2);
+				exprs.add(new AttrExpr(attrName, attValue));
+				subPath = matcher.group(3);
+			}
+			else
+			{
+				matcher = attrWithoutValuePattern.matcher(subPath);
+				if(matcher.matches())
+				{
+					final String name = matcher.group(1);
+					subPath = matcher.group(2);
+					exprs.add(new AttrExpr(name, null));
+				}
+				else
+				{
+					throw new IllegalArgumentException("Unable to parse: " + subPath);
+				}
+			}
+		}
+		return exprs;
+	}
 
     private static ArrayList<Predicate<ImmutableElement>> toChildExprs(final Iterable<Predicate<ImmutableElement>> attrExprs)
 	{

@@ -29,7 +29,6 @@ import xml.entity.mutableelement.Element;
 import xml.entity.mutableelement.ElementFactory;
 import xml.entity.serilalize.transform.AddNamespacesTransformation;
 
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -61,10 +60,11 @@ public class TestAddNamespaceTransformation
         final ImmutableElement transformed = xsiNsTransformation.apply(element);
 
         assertThat(transformed, hasXsiNs);
-        final ImmutableList<ImmutableElement> all = FluentIterable
-                .from(transformed.children())
-                .filter(attr(XMLNS_XSI))
-                .toImmutableList();
+        final ImmutableList<ImmutableElement> all = transformed
+                .select()
+                .from("/*/*")
+                .where(attr(XMLNS_XSI))
+                .all();
         assertThat(all.size(), equalTo(1));
     }
 }

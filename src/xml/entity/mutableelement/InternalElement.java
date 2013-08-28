@@ -52,7 +52,9 @@ class InternalElement extends AbstractElement implements Element
 	@Override
 	public Element child(final String name)
 	{
-        return new MissingElement(this, name, this.factory);
+        final InternalElement child = new InternalElement(name, this.factory);
+        children.add(child);
+        return child;
 	}
 
 
@@ -96,15 +98,9 @@ class InternalElement extends AbstractElement implements Element
         }
         else
         {
-            return new MissingElement(this, "@" + string, this.factory)
-            {
-                @Override
-                public Element value(final String value)
-                {
-                    super.value(value);
-                    return getParent();
-                }
-            };
+            final Attribute child = new Attribute(string, null, this.factory);
+            children.add(child);
+            return child;
         }
     }
 

@@ -21,8 +21,6 @@ import javax.annotation.Nullable;
 import xml.entity.immutableelement.ImmutableElement;
 import xml.entity.immutableelement.ImmutableElementFactory;
 
-import com.google.common.base.Preconditions;
-
 class Attribute extends AbstractElement implements Element
 {
     private String value;
@@ -30,7 +28,6 @@ class Attribute extends AbstractElement implements Element
     Attribute(final String name, final String value, final ImmutableElementFactory factory)
     {
         super("@" + name, factory);
-        Preconditions.checkNotNull(value);
         this.value = value;
     }
 

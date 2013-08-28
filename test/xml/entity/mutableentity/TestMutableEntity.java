@@ -15,7 +15,6 @@
  */
 package xml.entity.mutableentity;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static xml.entity.mutableentity.MutableMatchers.hasChild;
 import static xml.entity.mutableentity.MutableMatchers.isLeaf;
@@ -51,31 +50,11 @@ public class TestMutableEntity
     public void testSubNode()
     {
         final Element root = factory.createNode("Bar");
-        final Element node = root.child("Foo").create();
-        collector.checkThat(node, nameIs("Foo"));
-        collector.checkThat(node, valueIs(null));
-        collector.checkThat(node, isLeaf());
-        collector.checkThat(node, not(isMissing));
-    }
-
-    @Test
-    public void testGetChildByName()
-    {
-        final Element root = factory.createNode("Foo");
-        final Element child = root.child("Bar");
-        collector.checkThat(root.child("Bar"), not(equalTo(child)));
-        collector.checkThat(root, not(hasChild(nameIs("Bar"))));
-    }
-
-    @Test
-    public void testMissingNode()
-    {
-        final Element root = factory.createNode("Bar");
         final Element node = root.child("Foo");
         collector.checkThat(node, nameIs("Foo"));
         collector.checkThat(node, valueIs(null));
         collector.checkThat(node, isLeaf());
-        collector.checkThat(node, isMissing);
+        collector.checkThat(node, not(isMissing));
     }
 
     @Test
@@ -140,12 +119,12 @@ public class TestMutableEntity
     {
         final Element root = factory.createNode("Bar");
         final Element node = root.attribute("name").value("Hej");
-        collector.checkThat(node, nameIs("Bar"));
-        collector.checkThat(node, valueIs(null));
-        collector.checkThat(node, not(isLeaf()));
-        collector.checkThat(node, not(isMissing));
-        collector.checkThat(node, hasChild(nameIs("@name")));
-        collector.checkThat(node, hasChild(valueIs("Hej")));
+        collector.checkThat(root, nameIs("Bar"));
+        collector.checkThat(root, valueIs(null));
+        collector.checkThat(root, not(isLeaf()));
+        collector.checkThat(root, not(isMissing));
+        collector.checkThat(root, hasChild(nameIs("@name")));
+        collector.checkThat(root, hasChild(valueIs("Hej")));
     }
 
     @Test

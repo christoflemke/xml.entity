@@ -57,7 +57,7 @@ public class TestRemoveNamespacePrefixes
     public void removeOnElement()
     {
         final Element node = factory.createNode("root");
-        node.child("foo:bar").create();
+        node.child("foo:bar");
         final ImmutableElement element = node.immutableCopy();
 
         final ImmutableElement transformed = tranformation.apply(element);

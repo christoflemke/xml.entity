@@ -41,7 +41,7 @@ public interface Element
     String value();
 
     /**
-     * The children of this node. Creates the node if its missing.
+     * The children of this node.
      * 
      * @return
      */
@@ -49,7 +49,7 @@ public interface Element
     Collection<Element> children();
 
     /**
-     * This will always create a missing child!
+     * This will always create a new child!
      */
     @Nonnull
     Element child(String name);
@@ -69,14 +69,6 @@ public interface Element
     ImmutableElement immutableCopy();
 
     /**
-     * Create this element if it does not exist
-     * 
-     * @return Either the existing element or a newly created element
-     */
-    @Nonnull
-    Element create();
-
-    /**
      * Add or access an attribute on this node. Creates the node if its missing.
      * 
      * @param name
@@ -87,7 +79,7 @@ public interface Element
     Element attribute(String name);
 
     /**
-     * Set the value of the element. Creates the element if its missing
+     * Set the value of the element.
      * 
      * @param value
      *            The text content of this element

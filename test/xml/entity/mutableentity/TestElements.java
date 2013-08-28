@@ -74,7 +74,7 @@ public class TestElements
     {
         final Element root = factory.createNode("foo");
         root.child("bar").value("baz");
-        root.child("moin").create();
+        root.child("moin");
 
         final ImmutableList<Element> all = FluentIterable.from(root.children()).filter(byValue(null)).toImmutableList();
         assertThat(all.size(), equalTo(1));

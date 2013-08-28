@@ -74,11 +74,11 @@ public class TestPathParser
 		final PathExpr segment = iterator.next();
 		assertThat(segment.toString(), startsWith("/Bar"));
         final Element matching = ElementFactory.create().createNode("Bar");
-        matching.attribute("name").value("baz").create();
+        matching.attribute("name").value("baz");
         final Element mismatchname = ElementFactory.create().createNode("Bar");
-        mismatchname.attribute("name1").value("baz").create();
+        mismatchname.attribute("name1").value("baz");
         final Element mismatchvalue = ElementFactory.create().createNode("Bar");
-        mismatchvalue.attribute("name").value("baz1").create();
+        mismatchvalue.attribute("name").value("baz1");
         assertThat(segment, matches(matching.immutableCopy()));
         assertThat(segment, not(matches(mismatchname.immutableCopy())));
         assertThat(segment, not(matches(mismatchvalue.immutableCopy())));

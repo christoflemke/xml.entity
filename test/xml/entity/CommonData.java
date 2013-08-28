@@ -101,7 +101,7 @@ public class CommonData
 		@Override public Element get()
 		{
             final Element root = factory.createNode("Foo");
-            root.child("Bar").create();
+            root.child("Bar");
             return root;
 		}
 	};

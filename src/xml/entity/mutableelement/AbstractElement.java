@@ -41,13 +41,6 @@ abstract class AbstractElement implements Element
         return this.name;
     }
 
-    @Override
-    @Nonnull
-    public Element create()
-    {
-        return this;
-    }
-
     public boolean isMissing()
     {
         return false;

@@ -37,13 +37,13 @@ public class TestImmutableElements
     public void testHashPath()
     {
         final Element match = factory.createNode("Foo");
-        match.child("Bar").create();
+        match.child("Bar");
 
         final Predicate<ImmutableElement> expr = ImmutableElements.hasPath("/Foo/Bar/");
         collector.checkThat(expr.apply(match.immutableCopy()), equalTo(true));
 
         final Element mismatch = factory.createNode("Bar");
-        mismatch.child("Foo").create();
+        mismatch.child("Foo");
         collector.checkThat(expr.apply(mismatch.immutableCopy()), equalTo(false));
     }
 }

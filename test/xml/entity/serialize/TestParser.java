@@ -31,7 +31,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.junit.Test;
-import org.xml.sax.SAXException;
 
 import xml.entity.CommonData;
 import xml.entity.immutableelement.ImmutableElement;
@@ -43,7 +42,7 @@ public class TestParser
     private final Parser parser = DefaultServiceContext.create().parser();
 
 	@Test
-	public void testParseSimpleXml() throws SAXException, IOException
+    public void testParseSimpleXml() throws IOException
 	{
         final ImmutableElement xmlElement = this.parser.parse(CommonData.simpleXml.getInput());
 		assertThat(xmlElement, nameIs("Foo"));
@@ -52,7 +51,7 @@ public class TestParser
 	}
 
 	@Test
-	public void testParseSimpleXmlWithWhiteSpace() throws SAXException, IOException
+    public void testParseSimpleXmlWithWhiteSpace() throws IOException
 	{
         final ImmutableElement xmlElement = this.parser.parse(CommonData.simpleXmlWithWhitespace.getInput());
 		assertThat(xmlElement, nameIs("Foo"));
@@ -60,7 +59,7 @@ public class TestParser
 	}
 
 	@Test
-	public void testParseWithWildCharacters() throws SAXException, IOException
+    public void testParseWithWildCharacters() throws IOException
 	{
         final ImmutableElement xmlElement = this.parser.parse(CommonData.xmlWithWildCharacters.getInput());
 		assertThat(xmlElement, nameIs("Foo"));
@@ -70,7 +69,7 @@ public class TestParser
 	}
 
 	@Test
-	public void testParseAttribute() throws SAXException, IOException
+    public void testParseAttribute() throws IOException
 	{
         final ImmutableElement xmlElement = this.parser.parse(CommonData.withAttr.getInput());
         final ImmutableElement child = xmlElement.child("Bar");
@@ -80,7 +79,7 @@ public class TestParser
 	}
 
 	@Test
-	public void testParseWithMultipeChildsWithSameName() throws SAXException, IOException
+    public void testParseWithMultipeChildsWithSameName() throws IOException
 	{
         final ImmutableElement xmlElement = this.parser.parse(
                 CommonData.xmlWithMultipleElementsWithSameName.getInput());
@@ -94,12 +93,13 @@ public class TestParser
 	}
 
 	@Test
-	public void testParseTextWithAttribute() throws SAXException, IOException
+    public void testParseTextWithAttribute() throws IOException
 	{
 		this.parser.parse(CommonData.withAttrAndText.getInput());
 	}
 
-	@Test public void testIgnoreComments() throws SAXException, IOException
+    @Test
+    public void testIgnoreComments() throws IOException
 	{
         final ImmutableElement element = this.parser.parse(CommonData.withComments.getInput());
 		assertThat(element, nameIs("Foo"));

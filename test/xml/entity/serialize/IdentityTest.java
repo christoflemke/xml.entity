@@ -30,7 +30,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 import xml.entity.CommonData;
 import xml.entity.immutableelement.ImmutableElement;
@@ -74,7 +73,8 @@ public class IdentityTest
 		this.expectIdentity = expectIdentity;
 	}
 
-	@Test public void testIdentity() throws SAXException, IOException
+    @Test
+    public void testIdentity() throws IOException
 	{
 		final String asString = CharStreams.toString(this.input);
 		this.logger.debug("asString:   {}", asString);

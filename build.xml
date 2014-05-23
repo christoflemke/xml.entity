@@ -14,7 +14,7 @@
 			sync="true"
 		/>
 		<path id="core.lib.path.id">
-			<fileset dir="${lib.dir}/master" includes="**/*.jar"/>
+			<fileset dir="${lib.dir}/compile" includes="**/*.jar"/>
 		</path>
 		<path id="test.lib.path.id">
 			<fileset dir="${lib.dir}/test"  includes="**/*.jar"/>

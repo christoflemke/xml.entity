@@ -14,7 +14,7 @@
 		<conf name="optional"/>
 		<conf name="runtime"/>
 		<conf name="default" extends="master, runtime"/>
-		<conf name="test" visibility="private"/>
+		<conf name="test" visibility="private" extends="runtime"/>
 		<conf name="sources" visibility="public"
 			description="this configuration contains the source artifact of this module, if any." />
 		<conf name="javadoc" visibility="public"
@@ -34,12 +34,12 @@
 		<dependency org="org.slf4j" name="slf4j-api" rev="1.6.6" conf="runtime->default"/>
 		
 		<dependency org="com.google.code.findbugs" name="jsr305" rev="2.0.1" conf="optional->default"/>
+        <dependency org="org.hamcrest" name="hamcrest-core" rev="1.3" conf="optional->default"/>
 		
 		<!--
 		<dependency org="ch.qos.logback" name="logback-classic" rev="1.0.7"/>
 		-->
 		<dependency org="junit" name="junit" rev="4.11"/>
-        <dependency org="org.hamcrest" name="hamcrest-core" rev="1.3"/>
 		<dependency org="org.mockito" name="mockito-core" rev="1.9.5">
 		  <exclude org="org.hamcrest"/>
 		</dependency>

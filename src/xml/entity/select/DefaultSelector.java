@@ -25,7 +25,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import javax.inject.Inject;
 
 import xml.entity.immutableelement.ImmutableElement;
 import xml.entity.immutableelement.ImmutableElementFactory;
@@ -42,8 +41,8 @@ import xml.entity.select.dsl.DSL.WithWhere;
 import xml.entity.select.dsl.DSLException;
 import xml.entity.select.dsl.ExpectedMatches;
 import xml.entity.select.dsl.NodeSelection;
-import xml.entity.visitor.SelectionVisitor;
 import xml.entity.visitor.ReplaceVisitor;
+import xml.entity.visitor.SelectionVisitor;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
@@ -59,7 +58,6 @@ public class DefaultSelector implements Selector
     final ImmutableElementFactory factory;
     private final PathParser pathParser;
 
-    @Inject
     public DefaultSelector(
             final PathParser pathParser,
             final ImmutableElementFactory factory)
@@ -205,6 +203,7 @@ public class DefaultSelector implements Selector
             return this.expectedMatches;
         }
 
+        @Override
         public final T expect(final ExpectedMatches matches)
         {
             return create(this.root, this.path, this.expr, matches);
@@ -254,6 +253,7 @@ public class DefaultSelector implements Selector
             return new Visitor();
         }
 
+        @Override
         @Nonnull
         public final ImmutableElement element()
         {

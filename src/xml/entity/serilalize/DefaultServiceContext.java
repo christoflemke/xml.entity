@@ -16,7 +16,6 @@
 package xml.entity.serilalize;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
 
 import xml.entity.immutableelement.ImmutableElementFactory;
 import xml.entity.mutableelement.ElementFactory;
@@ -27,7 +26,7 @@ public class DefaultServiceContext implements ServiceContext
     private final Serializer serializer;
     private final ImmutableElementFactory factory;
     private final ElementFactory mutableFactory;
-    @Inject
+
     public DefaultServiceContext(
             final Parser parser,
             final Serializer serializer,

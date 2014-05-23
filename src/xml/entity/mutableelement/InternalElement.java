@@ -85,7 +85,7 @@ class InternalElement extends AbstractElement implements Element
         final ImmutableList<ImmutableElement> children = FluentIterable
                 .from(children())
                 .transform(Elements.immutableCopy)
-                .toImmutableList();
+                .toList();
         return this.factory.createNode(name(), children);
     }
 

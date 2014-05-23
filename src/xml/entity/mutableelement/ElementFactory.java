@@ -15,15 +15,12 @@
  */
 package xml.entity.mutableelement;
 
-import javax.inject.Inject;
-
 import xml.entity.immutableelement.ImmutableElementFactory;
 
 public class ElementFactory
 {
     private final ImmutableElementFactory immutableFactory;
 
-    @Inject
     public ElementFactory(final ImmutableElementFactory factory)
     {
         super();

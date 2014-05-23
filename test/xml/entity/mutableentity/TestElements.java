@@ -76,7 +76,7 @@ public class TestElements
         root.child("bar").value("baz");
         root.child("moin");
 
-        final ImmutableList<Element> all = FluentIterable.from(root.children()).filter(byValue(null)).toImmutableList();
+        final ImmutableList<Element> all = FluentIterable.from(root.children()).filter(byValue(null)).toList();
         assertThat(all.size(), equalTo(1));
         assertThat(Iterables.getOnlyElement(all).value(), nullValue());
     }

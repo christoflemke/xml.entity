@@ -20,7 +20,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Deque;
 
-import javax.inject.Inject;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -47,7 +46,6 @@ class ParserImpl implements Parser
     private final SAXParserFactory saxFactory = SAXParserFactory.newInstance();
     private final ImmutableElementFactory factory;
 
-    @Inject
     ParserImpl(final ImmutableElementFactory factory)
     {
         this.factory = factory;

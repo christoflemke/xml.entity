@@ -43,7 +43,6 @@ import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Range;
-import com.google.common.collect.Ranges;
 
 public class ImmutableElementPerformanceTest
 {
@@ -103,7 +102,7 @@ public class ImmutableElementPerformanceTest
     @Test
     public void select()
     {
-        final Range<Character> range = Ranges.closed('A', 'z');
+        final Range<Character> range = Range.closed('A', 'z');
         final int iterations = 10;
         logRange(range);
         final ImmutableElement root = createTree(range);
@@ -141,7 +140,7 @@ public class ImmutableElementPerformanceTest
     public void parse() throws Exception
     {
         // increase this range by one and you will run out of MEM
-        final Range<Character> range = Ranges.closed('a', 'j');
+        final Range<Character> range = Range.closed('a', 'j');
         logRange(range);
         final ImmutableElement root = createTree(range);
 
@@ -171,7 +170,7 @@ public class ImmutableElementPerformanceTest
 
     private int size(final Range<Character> range)
     {
-        final ContiguousSet<Character> asSet = range.asSet(this.domain);
+        final ContiguousSet<Character> asSet = ContiguousSet.create(range, this.domain);
         final int size = asSet.size();
         return size;
     }

@@ -27,7 +27,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
-import javax.inject.Inject;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -40,7 +39,7 @@ import com.google.common.collect.ImmutableList;
 class SerializerImpl implements Serializer
 {
     private final XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newFactory();
-    @Inject
+
     public SerializerImpl()
     {
     }

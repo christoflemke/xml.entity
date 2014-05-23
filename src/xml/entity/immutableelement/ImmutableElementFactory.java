@@ -17,7 +17,6 @@ package xml.entity.immutableelement;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-import javax.inject.Inject;
 
 import xml.entity.select.DefaultSelector;
 import xml.entity.select.PathParser;
@@ -30,7 +29,6 @@ public class ImmutableElementFactory
 {
     private final Selector selector;
 
-    @Inject
     public ImmutableElementFactory(@Nonnull final Selector selector)
     {
         this.selector = selector;

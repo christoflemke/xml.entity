@@ -69,7 +69,7 @@ public class AddNamespacesTransformation implements ElementTransformation
                 .iterable()
                 .transform(toName())
                 .transform(namespaceDeclToPrefix)
-                .toImmutableSet();
+                .toSet();
 
         final SetView<String> missingNamespaces = Sets.difference(prefixToUrl.keySet(), declaredNamespaces);
 
